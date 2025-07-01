@@ -1,0 +1,27 @@
+{
+    "device_frame_version": "latest",
+    "default": {
+        "title": {
+            "fonts": [
+              {
+                "font": "./fonts/LINESeedJP_TTF_Rg.ttf",
+                "supported": ["ja-JP"]
+              }
+            ],
+            "color": "#000000"
+        },
+        "background": "./background.jpg",
+        "padding": 50
+    },
+    "data": [
+        {
+          "filter": "01-books"
+        },
+        {
+          "filter": "02-search"
+        },
+        {
+          "filter": "03-statistics"
+        }
+    ]
+}

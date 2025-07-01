@@ -1,0 +1,43 @@
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+build/
+DerivedData/
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+/.bundle
+vendor/bundle
+
+/.env
+**/Generated/*
+
+!.gitkeep
+
+## packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+## api key
+/AuthKey.p8
+
+## Firebase configuration
+**/GoogleService-Info.plist
+
+## StoreKit configuration
+**/*.storekit
+
+## Claude settings
+.claude/settings.local.json
+
+/tools/*
+/test_output
+*.coredataproj

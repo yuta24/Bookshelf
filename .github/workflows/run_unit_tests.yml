@@ -1,0 +1,26 @@
+name: Run unit tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1,3"
+
+jobs:
+  test:
+    runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
+      FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ruby/setup-ruby@v1.245.0
+        with:
+          bundler-cache: true
+      - name: Bootstrap
+        run: make bootstrap
+        env:
+          ENV_PASSPHRASE: ${{ secrets.ENV_PASSPHRASE }}
+          AUTH_PASSPHRASE: ${{ secrets.AUTH_PASSPHRASE }}
+      - name: Run unit tests
+        run: make unit-test

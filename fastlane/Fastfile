@@ -1,0 +1,14 @@
+default_platform(:ios)
+
+workspace = "Bookshelf.xcworkspace"
+
+platform :ios do
+  desc "Create screenshot"
+  lane :create_screenshots do
+    capture_ios_screenshots
+
+    frameit(
+      path: "./fastlane/screenshots"
+    )
+  end
+end

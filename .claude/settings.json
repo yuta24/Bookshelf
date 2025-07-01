@@ -1,0 +1,12 @@
+{
+  "enabledMcpjsonServers": [
+    "XcodeBuildMCP",
+    "github",
+    "asana"
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(make *)"
+    ]
+  }
+}

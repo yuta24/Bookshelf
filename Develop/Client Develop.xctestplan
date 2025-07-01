@@ -1,0 +1,58 @@
+{
+  "configurations" : [
+    {
+      "id" : "D46FC873-5A9D-40E3-9033-DC6C655475A8",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-FIRAnalyticsDebugEnabled"
+      },
+      {
+        "argument" : "-FIRDebugDisabled"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Client-Develop.xcodeproj",
+      "identifier" : "2BB43B3F2677992900497798",
+      "name" : "Client"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Client-Develop.xcodeproj",
+        "identifier" : "2BB43B542677992B00497798",
+        "name" : "ClientTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Client-Develop.xcodeproj",
+        "identifier" : "2BB43B5E2677992B00497798",
+        "name" : "ClientUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Core",
+        "identifier" : "BookCoreTests",
+        "name" : "BookCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Presentation",
+        "identifier" : "PresentationTests",
+        "name" : "PresentationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

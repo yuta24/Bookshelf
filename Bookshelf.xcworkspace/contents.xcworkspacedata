@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Experiment">
+   </FileRef>
+   <FileRef
+      location = "group:Common">
+   </FileRef>
+   <FileRef
+      location = "group:Core">
+   </FileRef>
+   <FileRef
+      location = "group:Presentation">
+   </FileRef>
+   <FileRef
+      location = "group:Infrastructure">
+   </FileRef>
+   <FileRef
+      location = "group:Develop/Client-Develop.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Production/Client.xcodeproj">
+   </FileRef>
+</Workspace>

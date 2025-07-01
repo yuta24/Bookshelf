@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "linear": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.linear.app/sse"
+      ]
+    },
+    "XcodeBuildMCP": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "xcodebuildmcp@1.7.0"
+      ],
+      "env": {
+        "INCREMENTAL_BUILDS_ENABLED": "true",
+        "SENTRY_DISABLED": "true"
+      }
+    }
+  }
+}

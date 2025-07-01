@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>genres</key>
+  <string>[   {     "booksGenreId": "001001",     "booksGenreName": "漫画（コミック）",     "genreLevel": 2   },   {     "booksGenreId": "001004",     "booksGenreName": "小説・エッセイ",     "genreLevel": 2   },   {     "booksGenreId": "001005",     "booksGenreName": "パソコン・システム開発",     "genreLevel": 2   },   {     "booksGenreId": "001006",     "booksGenreName": "ビジネス・経済・就職",     "genreLevel": 2   },   {     "booksGenreId": "001008",     "booksGenreName": "人文・思想・社会",     "genreLevel": 2   },   {     "booksGenreId": "001012",     "booksGenreName": "科学・技術",     "genreLevel": 2   },   {     "booksGenreId": "001017",     "booksGenreName": "ライトノベル",     "genreLevel": 2   },   {     "booksGenreId": "001019",     "booksGenreName": "文庫",     "genreLevel": 2   },   {     "booksGenreId": "001020",     "booksGenreName": "新書",     "genreLevel": 2   },   {     "booksGenreId": "001028",     "booksGenreName": "医学・薬学・看護学・歯科学",     "genreLevel": 2   } ]</string>
+</dict>
+</plist>

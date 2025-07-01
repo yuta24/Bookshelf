@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": [
+    "bundler",
+    "github-actions",
+    "regex",
+    "ruby-version",
+    "swift"
+  ],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "groupName": "Tools",
+      "matchManagers": ["bundler", "ruby-version"]
+    },
+    {
+      "groupName": "Libraries",
+      "matchManagers": ["swift"]
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"]
+    }
+  ],
+  "regexManagers": [
+    {
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "mono0926/LicensePlist",
+      "fileMatch": ["^scripts/tool/install-licenseplist.sh"],
+      "matchStrings": ["LICENSEPLIST_VERSION=(?<currentValue>.*?)\\n"]
+    },
+    {
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "krzysztofzablocki/Sourcery",
+      "fileMatch": ["^scripts/tool/install-sourcery.sh"],
+      "matchStrings": ["SOURCERY_VERSION=(?<currentValue>.*?)\\n"]
+    },
+    {
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "realm/SwiftLint",
+      "fileMatch": ["^scripts/tool/install-swiftlint.sh"],
+      "matchStrings": ["SWIFTLINT_VERSION=(?<currentValue>.*?)\\n"]
+    },
+    {
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "cpisciotta/xcbeautify",
+      "fileMatch": ["^scripts/tool/install-xcbeautify.sh"],
+      "matchStrings": ["XCBEAUTIFY_VERSION=(?<currentValue>.*?)\\n"]
+    }
+  ],
+  "reviewers": ["yuta24"],
+  "schedule": ["after 10pm every weekend", "before 5am every weekend"],
+  "timezone": "Japan"
+}
