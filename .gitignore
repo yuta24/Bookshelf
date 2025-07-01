@@ -38,6 +38,9 @@ fastlane/test_output
 ## Claude settings
 .claude/settings.local.json
 
+## Certificates
+Certificates/
+
 /tools/*
 /test_output
 *.coredataproj
