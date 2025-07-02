@@ -54,7 +54,7 @@ find_best_simulator() {
     local environment="$2"
     
     # Extract iOS versions from simulator list headers and use priority list
-    local available_ios_versions=$(xcrun simctl list devices available | rg -- "-- iOS" | sed -E 's/^-- iOS ([0-9]+\.[0-9]+) --.*/\1/')
+    local available_ios_versions=$(xcrun simctl list devices available | grep -- "-- iOS" | sed -E 's/^-- iOS ([0-9]+\.[0-9]+) --.*/\1/')
     
     # Try each device in priority order
     for device in "${DEVICE_PRIORITY[@]}"; do
