@@ -21,6 +21,6 @@ jobs:
         run: make bootstrap
         env:
           ENV_PASSPHRASE: ${{ secrets.ENV_PASSPHRASE }}
-          AUTH_PASSPHRASE: ${{ secrets.AUTH_PASSPHRASE }}
+          GOOGLE_SERVICE_PASSPHRASE: ${{ secrets.GOOGLE_SERVICE_PASSPHRASE }}
       - name: Run unit tests
         run: make unit-test
