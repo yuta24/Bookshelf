@@ -48,6 +48,15 @@ get_available_simulators() {
     xcrun simctl list devices available | grep -E "iPhone" | grep -v "unavailable" | sed 's/^[[:space:]]*//'
 }
 
+# Function to validate simulator exists
+validate_simulator() {
+    local device="$1"
+    local ios_version="$2"
+    
+    # Check if the specific device+OS combination exists
+    xcrun simctl list devices available | grep -E "^[[:space:]]*${device} \(" | grep -q "iOS ${ios_version}"
+}
+
 # Function to find best matching simulator
 find_best_simulator() {
     local available_simulators="$1"
@@ -62,32 +71,39 @@ find_best_simulator() {
             # Try each iOS version in priority order for this device
             for ios_version in "${IOS_VERSION_PRIORITY[@]}"; do
                 if echo "$available_ios_versions" | grep -q "^${ios_version}$"; then
+                    # Validate the combination actually exists
+                    if validate_simulator "$device" "$ios_version"; then
+                        echo "${device}|${ios_version}"
+                        return 0
+                    fi
+                fi
+            done
+            # If no priority version found, try the first available version for this device
+            for ios_version in $available_ios_versions; do
+                if validate_simulator "$device" "$ios_version"; then
                     echo "${device}|${ios_version}"
                     return 0
                 fi
             done
-            # If no priority version found, use the first available version
-            local first_version=$(echo "$available_ios_versions" | head -1)
-            if [[ -n "$first_version" ]]; then
-                echo "${device}|${first_version}"
+        fi
+    done
+    
+    # If no priority device found, find any working iPhone combination
+    for ios_version in $available_ios_versions; do
+        local first_iphone_for_version=$(xcrun simctl list devices available | grep -A 50 -- "-- iOS ${ios_version} --" | grep -E "iPhone" | head -1)
+        if [[ -n "$first_iphone_for_version" ]]; then
+            local device_name=$(echo "$first_iphone_for_version" | sed -E 's/^[[:space:]]*([^(]+) \([^)]+\) \([^)]+\).*/\1/' | xargs)
+            if validate_simulator "$device_name" "$ios_version"; then
+                echo "${device_name}|${ios_version}"
                 return 0
             fi
         fi
     done
     
-    # If no priority device found, use first available iPhone
-    local first_iphone=$(echo "$available_simulators" | head -1)
-    if [[ -n "$first_iphone" ]]; then
-        # Extract device name (remove UUID and status)
-        local device_name=$(echo "$first_iphone" | sed -E 's/^([^(]+) \([^)]+\) \([^)]+\).*/\1/' | xargs)
-        # Get the first available iOS version
-        local ios_version=$(echo "$available_ios_versions" | head -1)
-        echo "${device_name}|${ios_version}"
-        return 0
-    fi
-    
-    # Ultimate fallback
-    echo "${DEFAULT_DEVICE}|${DEFAULT_OS}"
+    # Ultimate fallback - use whatever the system thinks is valid
+    local fallback_device=$(xcrun simctl list devices available | grep -E "iPhone" | head -1 | sed -E 's/^[[:space:]]*([^(]+) \([^)]+\) \([^)]+\).*/\1/' | xargs)
+    local fallback_version=$(echo "$available_ios_versions" | head -1)
+    echo "${fallback_device:-$DEFAULT_DEVICE}|${fallback_version:-$DEFAULT_OS}"
 }
 
 # Function to log environment info
@@ -104,6 +120,11 @@ log_environment_info() {
     
     if [[ "$environment" == "circleci" ]]; then
         echo "CircleCI Xcode Version: ${XCODE_VERSION:-'Unknown'}" >&2
+        # Debug: show available simulators in CI
+        echo "Available iOS Versions:" >&2
+        xcrun simctl list devices available | grep -- "-- iOS" | head -5 >&2
+        echo "Available iPhone Simulators (first 5):" >&2
+        xcrun simctl list devices available | grep -E "iPhone" | head -5 >&2
     elif [[ "$environment" == "github_actions" ]]; then
         echo "GitHub Actions Runner: ${RUNNER_OS:-'Unknown'}" >&2
         echo "Developer Dir: ${DEVELOPER_DIR:-'Default'}" >&2
