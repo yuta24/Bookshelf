@@ -1,17 +1,22 @@
 #!/bin/bash
 
-TEST_PLATFORM='iOS Simulator'
-TEST_DEVICE=${TEST_DEVICE:-'iPhone 15'}
-TEST_OS=${TEST_OS:-'18.5'}
-TEST_DESTINATION="platform=${TEST_PLATFORM},name=${TEST_DEVICE},OS=${TEST_OS}"
+set -euo pipefail
 
 GIT_REPO=$(git rev-parse --show-toplevel)
+
+# Use automatic simulator detection
+TEST_DESTINATION=$("${GIT_REPO}/scripts/detect-simulator.sh")
+
+# Extract device and OS info for logging (optional fallback for display)
+TEST_DEVICE=$(echo "$TEST_DESTINATION" | sed -E 's/.*name=([^,]+).*/\1/')
+TEST_OS=$(echo "$TEST_DESTINATION" | sed -E 's/.*OS=([^,]+).*/\1/')
 
 rm -rf ${GIT_REPO}/test_output
 
 cd ${GIT_REPO}
 
 echo "Running unit tests for ${TEST_DEVICE} on ${TEST_OS}..."
+echo "Full destination: ${TEST_DESTINATION}"
 
 set -o pipefail && env NSUnbufferedIO=YES \
   xcodebuild \
