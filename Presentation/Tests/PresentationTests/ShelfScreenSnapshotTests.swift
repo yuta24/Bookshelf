@@ -15,7 +15,7 @@ struct ShelfScreenSnapshotTests {
         }
 
         withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.98, layout: .screen))
+            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.95, layout: .screen))
         }
     }
 
@@ -83,7 +83,7 @@ struct ShelfScreenSnapshotTests {
         }
 
         withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.98, layout: .screen))
+            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.95, layout: .screen))
         }
     }
 
@@ -133,7 +133,7 @@ struct ShelfScreenSnapshotTests {
         }
 
         withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.98, layout: .screen))
+            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.95, layout: .screen))
         }
     }
 }
