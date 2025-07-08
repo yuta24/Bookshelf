@@ -11,6 +11,7 @@ jobs:
   test:
     macos:
       xcode: 16.4.0
+    resource_class: m2pro.large
     steps:
       - checkout
       - restore_cache:
