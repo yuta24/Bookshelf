@@ -15,6 +15,10 @@ jobs:
       - checkout
       - bootstrap
       - run: make unit-test
+      - store_artifacts:
+          path: Presentation/Tests/PresentationTests/__Snapshots__
+          destination: snapshot-test-images
+          when: always
 
 workflows:
   version: 2
