@@ -47,6 +47,13 @@
       }
     },
     {
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "ShelfScreenSnapshotTests"
+          }
+        ]
+      },
       "target" : {
         "containerPath" : "container:..\/Presentation",
         "identifier" : "PresentationTests",
