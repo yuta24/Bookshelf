@@ -11,6 +11,9 @@ jobs:
   test:
     macos:
       xcode: 16.4.0
+    environment:
+      TEST_OS: 18.5
+      TEST_DEVICE: iPhone 16 Pro
     steps:
       - checkout
       - restore_cache:
