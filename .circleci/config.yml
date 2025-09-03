@@ -10,7 +10,7 @@ commands:
 jobs:
   test:
     macos:
-      xcode: 16.4.0
+      xcode: 26.0.0
     steps:
       - checkout
       - restore_cache:
