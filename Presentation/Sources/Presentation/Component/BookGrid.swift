@@ -26,8 +26,8 @@ struct BookGrid: View {
     var body: some View {
         LazyVGrid(
             columns: layout == .list
-                ? [.init(.flexible())] : [.init(.flexible()), .init(.flexible()), .init(.flexible())],
-            spacing: 12
+                ? [.init(.flexible())] : [.init(.flexible()), .init(.flexible()), .init(.flexible()), .init(.flexible())],
+            spacing: 8
         ) {
             ForEach(books) { book in
                 BookView(book: book, imageOnly: layout == .grid)
