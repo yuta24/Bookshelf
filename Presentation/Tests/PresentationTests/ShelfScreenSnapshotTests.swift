@@ -4,6 +4,7 @@ import SnapshotTesting
 import ComposableArchitecture
 import BookModel
 import BookCore
+import Foundation
 @testable import Presentation
 
 @MainActor
@@ -13,9 +14,10 @@ struct ShelfScreenSnapshotTests {
         let store = Store(initialState: ShelfFeature.State.make()) {
             ShelfFeature()
         }
+        let view = ShelfScreen(store: store)
 
-        withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.9, layout: .screen))
+        withSnapshotTesting(record: .failed) {
+            assertSnapshot(of: view, as: .image(perceptualPrecision: 0.9, layout: .screen))
         }
     }
 
@@ -81,9 +83,10 @@ struct ShelfScreenSnapshotTests {
         let store = Store(initialState: ShelfFeature.State.make(books: books)) {
             ShelfFeature()
         }
+        let view = ShelfScreen(store: store)
 
-        withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.9, layout: .screen))
+        withSnapshotTesting(record: .failed) {
+            assertSnapshot(of: view, as: .image(perceptualPrecision: 0.9, layout: .screen))
         }
     }
 
@@ -131,9 +134,10 @@ struct ShelfScreenSnapshotTests {
         let store = Store(initialState: ShelfFeature.State.make(books: books, layout: .grid)) {
             ShelfFeature()
         }
+        let view = ShelfScreen(store: store)
 
-        withSnapshotTesting {
-            assertSnapshot(of: ShelfScreen(store: store), as: .image(perceptualPrecision: 0.9, layout: .screen))
+        withSnapshotTesting(record: .failed) {
+            assertSnapshot(of: view, as: .image(perceptualPrecision: 0.9, layout: .screen))
         }
     }
 }

@@ -11,10 +11,29 @@ jobs:
   test:
     macos:
       xcode: 16.4.0
+    environment:
+      TEST_OS: 18.5
+      TEST_DEVICE: iPhone 16 Pro
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-spm-dependencies-{{ checksum "Bookshelf.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}-{{ checksum "Core/Package.resolved" }}-{{ checksum "Infrastructure/Package.resolved" }}-{{ checksum "Presentation/Package.resolved" }}
+            - v1-spm-dependencies-{{ checksum "Bookshelf.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}
+            - v1-spm-dependencies-
       - bootstrap
       - run: make unit-test
+      - store_artifacts:
+          path: Presentation/Tests/PresentationTests/__Snapshots__
+          destination: snapshot-test-images
+          when: always
+      - save_cache:
+          key: v1-spm-dependencies-{{ checksum "Bookshelf.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}-{{ checksum "Core/Package.resolved" }}-{{ checksum "Infrastructure/Package.resolved" }}-{{ checksum "Presentation/Package.resolved" }}
+          paths:
+            - ~/Library/Developer/Xcode/DerivedData
+            - ~/Library/Caches/org.swift.swiftpm
+            - ~/.cache/org.swift.swiftpm
+          when: always
 
 workflows:
   version: 2

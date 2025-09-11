@@ -19,7 +19,7 @@ struct BookView: View {
                     Color.gray
                 }
             }
-            .frame(width: 90, height: 120)
+            .frame(width: 72, height: 96)
 
             if !imageOnly {
                 VStack(alignment: .leading, spacing: 8) {

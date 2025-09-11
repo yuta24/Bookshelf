@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: macos-15
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.0.app/Contents/Developer
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
       FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
     steps:
@@ -24,3 +24,6 @@ jobs:
           GOOGLE_SERVICE_PASSPHRASE: ${{ secrets.GOOGLE_SERVICE_PASSPHRASE }}
       - name: Run unit tests
         run: make unit-test
+        env:
+          TEST_OS: 18.5
+          TEST_DEVICE: iPhone 16 Pro
