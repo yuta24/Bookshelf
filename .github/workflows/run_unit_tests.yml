@@ -13,8 +13,8 @@ jobs:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
       FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: ruby/setup-ruby@v1.245.0
+      - uses: actions/checkout@v4.3.0
+      - uses: ruby/setup-ruby@v1.258.0
         with:
           bundler-cache: true
       - name: Bootstrap
