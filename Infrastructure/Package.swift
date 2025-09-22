@@ -17,7 +17,7 @@ let targets: [Target] = [
         name: "AnalyticsClientLive",
         dependencies: [
             .product(name: "AnalyticsClient", package: "Core"),
-            .product(name: "FirebaseAnalyticsWithoutAdIdSupport", package: "firebase-ios-sdk"),
+            .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
