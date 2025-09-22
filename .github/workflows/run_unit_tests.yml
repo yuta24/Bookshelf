@@ -13,7 +13,7 @@ jobs:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
       FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
     steps:
-      - uses: actions/checkout@v4.3.0
+      - uses: actions/checkout@v5.0.0
       - uses: ruby/setup-ruby@v1.262.0
         with:
           bundler-cache: true
