@@ -25,6 +25,12 @@ struct ClientApp: App {
                 gateway: .init(
                     analyticsClient: .generate(),
                     bookClient: .generate(.shared),
+                    // swiftlint:disable force_try force_cast
+                    database: try! createDatabase(
+                        id: Bundle.main.object(forInfoDictionaryKey: "AppGroupsName") as! String,
+                        with: .default
+                    ),
+                    // swiftlint:enable force_try force_cast
                     genreClient: .generate(.remoteConfig()),
                     preReleaseNotificationClient: .generate(),
                     remindClient: .generate(),

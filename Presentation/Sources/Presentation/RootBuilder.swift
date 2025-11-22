@@ -27,6 +27,7 @@ public import FeatureFlags
 public import WidgetUpdater
 
 import ComposableArchitecture
+import GRDB
 
 public enum RootBuilder {
     public struct Configuratoin {
@@ -40,6 +41,7 @@ public enum RootBuilder {
     public struct Gateway {
         public var analyticsClient: AnalyticsClient
         public var bookClient: BookClient
+        public var database: any DatabaseWriter
         public var genreClient: GenreClient
         public var preReleaseNotificationClient: PreReleaseNotificationClient
         public var remindClient: RemindClient
@@ -55,6 +57,7 @@ public enum RootBuilder {
         public init(
             analyticsClient: AnalyticsClient,
             bookClient: BookClient,
+            database: any DatabaseWriter,
             genreClient: GenreClient,
             preReleaseNotificationClient: PreReleaseNotificationClient,
             remindClient: RemindClient,
@@ -69,6 +72,7 @@ public enum RootBuilder {
         ) {
             self.analyticsClient = analyticsClient
             self.bookClient = bookClient
+            self.database = database
             self.genreClient = genreClient
             self.preReleaseNotificationClient = preReleaseNotificationClient
             self.remindClient = remindClient

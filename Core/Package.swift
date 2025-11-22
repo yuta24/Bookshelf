@@ -295,7 +295,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections.git", exact: "1.2.1"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.22.3"),
         .package(url: "https://github.com/pointfreeco/swift-navigation.git", exact: "2.4.2"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", exact: "0.10.0"),
