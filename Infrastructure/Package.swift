@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 import PackageDescription
 
@@ -53,6 +53,16 @@ let targets: [Target] = [
         dependencies: [
             .target(name: "BookRecord"),
             .product(name: "SQLiteData", package: "sqlite-data"),
+            .product(name: "MigrationCore", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .testTarget(
+        name: "InfrastructureTests",
+        dependencies: [
+            .target(name: "Infrastructure"),
+            .target(name: "BookRecord"),
+            .product(name: "BookModel", package: "Core"),
         ],
         swiftSettings: defaultSwiftSettings
     ),

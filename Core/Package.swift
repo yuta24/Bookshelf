@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 @preconcurrency import PackageDescription
 
@@ -47,6 +47,7 @@ extension String {
 
     // Core
     static let BookCore = "BookCore"
+    static let MigrationCore = "MigrationCore"
     static let SettingsCore = "SettingsCore"
     static let StatisticsCore = "StatisticsCore"
 
@@ -90,6 +91,7 @@ let domainTargets: [Target] = [
         name: .BookModel,
         dependencies: [
             .product(name: "Tagged", package: "swift-tagged"),
+            .product(name: "SQLiteData", package: "sqlite-data"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -227,6 +229,13 @@ let coreTargets: [Target] = [
         swiftSettings: defaultSwiftSettings
     ),
     .target(
+        name: .MigrationCore,
+        dependencies: [
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
         name: .SettingsCore,
         dependencies: [
             .target(name: .Application),
@@ -290,11 +299,13 @@ let package = Package(
 
         // Core
         .library(name: .BookCore, targets: [.BookCore]),
+        .library(name: .MigrationCore, targets: [.MigrationCore]),
         .library(name: .SettingsCore, targets: [.SettingsCore]),
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections.git", exact: "1.2.1"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.3.0", traits: [.trait(name: "SQLiteDataTagged")]),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.22.3"),
         .package(url: "https://github.com/pointfreeco/swift-navigation.git", exact: "2.4.2"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", exact: "0.10.0"),

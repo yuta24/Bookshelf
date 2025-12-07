@@ -8,17 +8,25 @@ public func createDatabase(id: String, with manager: FileManager) throws -> any 
     var context
 
     var configuration = Configuration()
-    #if DEBUG
+
+    // Enable CloudKit sync compatibility
     configuration.prepareDatabase { db in
+        // Enable WAL mode for better concurrency and CloudKit compatibility
+        try db.execute(sql: "PRAGMA journal_mode = WAL")
+
+        // Enable foreign key constraints
+        try db.execute(sql: "PRAGMA foreign_keys = ON")
+
+        #if DEBUG
         db.trace(options: .profile) {
             if context == .preview {
-                          print("\($0.expandedDescription)")
+                print("\($0.expandedDescription)")
             } else {
                 logger.debug("\($0.expandedDescription)")
             }
         }
+        #endif
     }
-    #endif
 
     let fileURL = manager.containerURL(forSecurityApplicationGroupIdentifier: id)!
         .appending(path: "SQLiteData.sqlite")
@@ -59,7 +67,7 @@ public func createDatabase(id: String, with manager: FileManager) throws -> any 
           "bought" INTEGER NOT NULL ON CONFLICT REPLACE DEFAULT 0,
           "note" TEXT NOT NULL ON CONFLICT REPLACE DEFAULT '',
           "status" TEXT NOT NULL,
-          "read_at" TEXT NOT NULL,
+          "read_at" TEXT,
           "created_at" TEXT NOT NULL,
           "updated_at" TEXT NOT NULL
         ) STRICT
@@ -73,6 +81,24 @@ public func createDatabase(id: String, with manager: FileManager) throws -> any 
           "tag_id"  TEXT NOT NULL REFERENCES "tags"("id") ON DELETE CASCADE
         ) STRICT
         """).execute(db)
+    }
+
+    migrator.registerMigration("Create indexes") { db in
+        // Index for filtering books by status
+        try #sql("CREATE INDEX idx_books_status ON books(status)").execute(db)
+
+        // Index for filtering books by created_at (used in fetchAtYear)
+        try #sql("CREATE INDEX idx_books_created_at ON books(created_at)").execute(db)
+
+        // Index for checking book existence by ISBN
+        try #sql("CREATE INDEX idx_books_isbn ON books(isbn)").execute(db)
+
+        // Index for tag lookups by name
+        try #sql("CREATE INDEX idx_tags_name ON tags(name)").execute(db)
+
+        // Index for book_tags junction table queries
+        try #sql("CREATE INDEX idx_book_tags_book_id ON book_tags(book_id)").execute(db)
+        try #sql("CREATE INDEX idx_book_tags_tag_id ON book_tags(tag_id)").execute(db)
     }
 
     try migrator.migrate(database)

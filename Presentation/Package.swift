@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 @preconcurrency import PackageDescription
 
@@ -43,6 +43,7 @@ let presentationTargets: [Target] = [
             .product(name: "Device", package: "Core"),
             .product(name: "FeatureFlags", package: "Core"),
             .product(name: "GenreClient", package: "Core"),
+            .product(name: "MigrationCore", package: "Core"),
             .product(name: "SettingsCore", package: "Core"),
             .product(name: "StatisticsCore", package: "Core"),
             .product(name: "WidgetUpdater", package: "Core"),
