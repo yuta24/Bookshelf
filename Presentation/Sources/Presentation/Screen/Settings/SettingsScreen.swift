@@ -72,10 +72,12 @@ struct SettingsScreen: View {
         NavigationStack {
             List {
                 Section {
-                    Toggle(
-                        isOn: $store.isSyncEnabled.sending(\.screen.syncEnabledChanged),
-                        label: { Text("icloud_sync") }
-                    )
+                    if !store.isMigrationCompleted {
+                        Toggle(
+                            isOn: $store.isSyncEnabled.sending(\.screen.syncEnabledChanged),
+                            label: { Text("icloud_sync") }
+                        )
+                    }
 
                     if store.enableNotification {
                         Toggle(

@@ -55,6 +55,11 @@ public struct MigrationFeature: Sendable {
         }
 
         @CasePathable
+        public enum DelegateAction: Sendable {
+            case migrationCompleted
+        }
+
+        @CasePathable
         public enum Alert: Sendable {
             case dismiss
         }
@@ -62,6 +67,7 @@ public struct MigrationFeature: Sendable {
         case screen(ScreenAction)
         case `internal`(InternalAction)
         case external(ExternalAction)
+        case delegate(DelegateAction)
         case alert(PresentationAction<Alert>)
     }
 
@@ -133,7 +139,7 @@ public struct MigrationFeature: Sendable {
                         TextState("OK")
                     }
                 } message: {
-                    TextState("データベースの移行が完了しました。\n変更を反映するには、アプリを手動で再起動してください。")
+                    TextState("データベースの移行が完了しました。\niCloud同期が自動的に有効化されました。\n変更を反映するには、アプリを手動で再起動してください。")
                 }
                 logger.info("Migration completed successfully")
                 return .none
@@ -144,10 +150,15 @@ public struct MigrationFeature: Sendable {
                 return .none
 
             case .alert(.presented(.dismiss)):
-                return .send(.external(.migrationFinished))
+                return .send(.delegate(.migrationCompleted))
+                    .merge(with: .send(.external(.migrationFinished)))
 
             case .alert(.dismiss):
-                return .send(.external(.migrationFinished))
+                return .send(.delegate(.migrationCompleted))
+                    .merge(with: .send(.external(.migrationFinished)))
+
+            case .delegate:
+                return .none
 
             case .external:
                 return .none

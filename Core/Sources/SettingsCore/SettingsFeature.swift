@@ -127,6 +127,12 @@ public struct SettingsFeature: Sendable {
             case .destination(.presented(.support(.delegate(.onInAppPurchased(.success(.success(.verified))))))):
                 state.destination = nil
                 return .none
+            case .destination(.presented(.migration(.delegate(.migrationCompleted)))):
+                // マイグレーション完了後、自動的にiCloud同期を有効化
+                state.isSyncEnabled = true
+                syncClient.update(.init(enabled: true))
+                // destinationは維持（アラートがdismissを処理）
+                return .none
             case .destination(.dismiss):
                 state.destination = nil
                 return .none
