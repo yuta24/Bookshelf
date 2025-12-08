@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 @preconcurrency import PackageDescription
 
@@ -17,6 +17,7 @@ extension Target.Dependency {
     static let NukeUI: Target.Dependency = .product(name: "NukeUI", package: "Nuke")
     static let PulseUI: Target.Dependency = .product(name: "PulseUI", package: "Pulse")
     static let SnapshotTesting: Target.Dependency = .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+    static let SQLiteData: Target.Dependency = .product(name: "SQLiteData", package: "sqlite-data")
 }
 
 extension String {
@@ -42,6 +43,7 @@ let presentationTargets: [Target] = [
             .product(name: "Device", package: "Core"),
             .product(name: "FeatureFlags", package: "Core"),
             .product(name: "GenreClient", package: "Core"),
+            .product(name: "MigrationCore", package: "Core"),
             .product(name: "SettingsCore", package: "Core"),
             .product(name: "StatisticsCore", package: "Core"),
             .product(name: "WidgetUpdater", package: "Core"),
@@ -51,6 +53,7 @@ let presentationTargets: [Target] = [
             .Inject,
             .NukeUI,
             .PulseUI,
+            .SQLiteData,
         ],
         resources: [
             .process("Resource/Hot.json"),
@@ -82,6 +85,7 @@ let package = Package(
         .package(url: "https://github.com/kean/Nuke.git", exact: "12.8.0"),
         .package(url: "https://github.com/kean/Pulse.git", exact: "5.1.4"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", exact: "1.5.2"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.3.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", exact: "1.18.7"),
         .package(path: "../Common"),
         .package(path: "../Core"),

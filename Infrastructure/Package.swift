@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 import PackageDescription
 
@@ -52,6 +52,17 @@ let targets: [Target] = [
         name: "Infrastructure",
         dependencies: [
             .target(name: "BookRecord"),
+            .product(name: "SQLiteData", package: "sqlite-data"),
+            .product(name: "MigrationCore", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .testTarget(
+        name: "InfrastructureTests",
+        dependencies: [
+            .target(name: "Infrastructure"),
+            .target(name: "BookRecord"),
+            .product(name: "BookModel", package: "Core"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -168,6 +179,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "12.3.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.3.0"),
         .package(path: "../Core"),
     ],
     targets: targets
