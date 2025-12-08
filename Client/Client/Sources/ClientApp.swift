@@ -36,7 +36,8 @@ struct ClientApp: App {
             // Create migration client
             let migrationClient = MigrationClient.generate(
                 persistence: delegate.persistence,
-                grdbDatabase: database
+                grdbDatabase: database,
+                appGroupIdentifier: appGroupsName
             )
 
             let syncEngine = try! SyncEngine(for: database, tables: Book2.self, Tag2.self, BookTag2.self)

@@ -7,9 +7,10 @@ public extension MigrationClient {
     static func generate(
         persistence: PersistenceController,
         grdbDatabase: any DatabaseWriter,
+        appGroupIdentifier: String? = nil,
         fileManager: @escaping @Sendable () -> FileManager = { .default }
     ) -> Self {
-        let tracker = MigrationTracker()
+        let tracker = MigrationTracker(appGroupIdentifier: appGroupIdentifier)
         let migrator = SwiftDataToGRDBMigrator(
             swiftDataContext: persistence.context,
             grdbDatabase: grdbDatabase

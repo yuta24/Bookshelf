@@ -9,8 +9,18 @@ public struct MigrationTracker: Sendable {
 
     private let userDefaults: @Sendable () -> UserDefaults
 
-    public init(userDefaults: @escaping @Sendable () -> UserDefaults = { .standard }) {
-        self.userDefaults = userDefaults
+    public init(
+        appGroupIdentifier: String? = nil,
+        userDefaults: @escaping @Sendable () -> UserDefaults = { .standard }
+    ) {
+        // If App Group identifier is specified, use shared UserDefaults
+        if let appGroupIdentifier = appGroupIdentifier {
+            self.userDefaults = {
+                UserDefaults(suiteName: appGroupIdentifier) ?? .standard
+            }
+        } else {
+            self.userDefaults = userDefaults
+        }
     }
 
     /// Check if SwiftData to GRDB migration has been completed
