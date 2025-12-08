@@ -130,6 +130,7 @@ public struct SettingsFeature: Sendable {
             case .destination(.presented(.migration(.delegate(.migrationCompleted)))):
                 // マイグレーション完了後、自動的にiCloud同期を有効化
                 state.isSyncEnabled = true
+                state.isMigrationCompleted = true
                 syncClient.update(.init(enabled: true))
                 // destinationは維持（アラートがdismissを処理）
                 return .none
