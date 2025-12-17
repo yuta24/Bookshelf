@@ -2,7 +2,7 @@
 
 GIT_REPO=$(git rev-parse --show-toplevel)
 
-LICENSEPLIST_VERSION=3.27.1
+LICENSEPLIST_VERSION=3.27.2
 
 curl -L "https://github.com/mono0926/LicensePlist/releases/download/${LICENSEPLIST_VERSION}/portable_licenseplist.zip" -o /tmp/licenseplist.zip
 unzip -oq /tmp/licenseplist.zip -d /tmp/licenseplist
