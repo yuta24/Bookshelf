@@ -13,41 +13,85 @@ import ShelfClientLive
 import SyncClient
 import SyncClientLive
 import TagClientLive
+import MigrationCore
+import BookModel
+import SQLiteData
+
+// swiftlint:disable force_try force_cast
 
 @main
 struct ClientApp: App {
+    let appGroupsName: String
+
+    // Use GRDB clients by default
+    let isSnapshot: Bool
+
     @UIApplicationDelegateAdaptor(AppDelegate.self)
     var delegate
 
     var body: some Scene {
         WindowGroup {
+            let database = try! createDatabase(id: appGroupsName, with: .default)
+
+            // Create migration client
+            let migrationClient = MigrationClient.generate(
+                persistence: delegate.persistence,
+                grdbDatabase: database,
+                appGroupIdentifier: appGroupsName
+            )
+
+            let syncEngine = try! SyncEngine(for: database, tables: Book2.self, Tag2.self, BookTag2.self)
+
+            // Check if migration is completed
+            let isMigrationCompleted = migrationClient.isCompleted()
+
             RootBuilder.build(
                 gateway: .init(
                     analyticsClient: .generate(),
                     bookClient: .generate(.shared),
+                    database: database,
                     genreClient: .generate(.remoteConfig()),
                     preReleaseNotificationClient: .generate(),
                     remindClient: .generate(),
                     searchClient: .generate(.shared),
-                    shelfClient: ProcessInfo.processInfo.arguments.contains("snapshot")
-                        ? .snapshot(delegate.persistence) : .generate(delegate.persistence),
+                    shelfClient: {
+                        if isSnapshot {
+                            return .snapshot(delegate.persistence)
+                        } else if isMigrationCompleted {
+                            // After migration: use GRDB
+                            return .generateGRDB(database)
+                        } else {
+                            // Before migration: use SwiftData
+                            return .generate(delegate.persistence)
+                        }
+                    }(),
                     syncClient: {
-                        // swiftlint:disable force_try
                         let repository = SyncClient.generate { enabled in
                             try! delegate.persistence.update(with: enabled)
                         }
                         try! delegate.persistence.update(with: repository.fetch()?.enabled ?? false)
-                        // swiftlint:enable force_try
                         return repository
                     }(),
-                    tagClient: .generate(delegate.persistence),
+                    syncEngine: syncEngine,
+                    tagClient: isMigrationCompleted
+                        ? .generateGRDB(database)  // After migration: use GRDB
+                        : .generate(delegate.persistence),  // Before migration: use SwiftData
                     application: .generate(),
                     device: .generate(),
                     featureFlags: .generate(.generate()),
-                    widget: .generate(.shared)
+                    widget: .generate(.shared),
+                    migrationClient: migrationClient
                 ),
                 with: .init(groupID: Project.current.subscription.groupID)
             )
         }
     }
+
+    init() {
+        self.appGroupsName = Bundle.main.object(forInfoDictionaryKey: "AppGroupsName") as! String
+
+        self.isSnapshot = ProcessInfo.processInfo.arguments.contains("snapshot")
+    }
 }
+
+// swiftlint:enable force_try force_cast

@@ -32,6 +32,7 @@
 		2B2F67DE26861FB4007C8F5D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2F67DD26861FB4007C8F5D /* CloudKit.framework */; };
 		2B46209F2988142D00C0619C /* FeatureFlags+Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B46209E2988142D00C0619C /* FeatureFlags+Impl.swift */; };
 		2B4680352826B88A005AA211 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 2B4680342826B88A005AA211 /* Presentation */; };
+		2B5C8CA72EE5D794006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA62EE5D794006E0B97 /* MigrationCore */; };
 		2B5CD8AD2A46DA50007EFFEF /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8AB2A46DA50007EFFEF /* InfoPlist.xcstrings */; };
 		2B5CD8AE2A46DA50007EFFEF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8AC2A46DA50007EFFEF /* Localizable.xcstrings */; };
 		2B5F955F2B9946B200CE092E /* GenreClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5F955E2B9946B200CE092E /* GenreClientLive */; };
@@ -217,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B5C8CA72EE5D794006E0B97 /* MigrationCore in Frameworks */,
 				2B22853A2AF4C73F00A5F2AA /* TagClientLive in Frameworks */,
 				2B2331012AD2EDDB005DF076 /* Infrastructure in Frameworks */,
 				2B2285382AF4C73900A5F2AA /* SearchClientLive in Frameworks */,
@@ -494,6 +496,7 @@
 				2B2285372AF4C73900A5F2AA /* SearchClientLive */,
 				2B2285392AF4C73F00A5F2AA /* TagClientLive */,
 				2B19633C2BAA98BC00B33496 /* ShelfClientLive */,
+				2B5C8CA62EE5D794006E0B97 /* MigrationCore */,
 			);
 			productName = WidgetExtension;
 			productReference = 2BF8772529E1BB42003C8723 /* WidgetExtension.appex */;
@@ -1167,6 +1170,10 @@
 		2B4680342826B88A005AA211 /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Presentation;
+		};
+		2B5C8CA62EE5D794006E0B97 /* MigrationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MigrationCore;
 		};
 		2B5F955E2B9946B200CE092E /* GenreClientLive */ = {
 			isa = XCSwiftPackageProductDependency;
