@@ -85,7 +85,7 @@ let package = Package(
         .package(url: "https://github.com/kean/Nuke.git", exact: "12.8.0"),
         .package(url: "https://github.com/kean/Pulse.git", exact: "5.1.4"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", exact: "1.5.2"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.3.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.4.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", exact: "1.18.7"),
         .package(path: "../Common"),
         .package(path: "../Core"),
