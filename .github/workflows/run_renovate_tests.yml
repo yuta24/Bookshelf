@@ -14,10 +14,10 @@ jobs:
   dry-run:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4.3.0
-      - uses: actions/setup-node@v4.4.0
+      - uses: actions/checkout@v5.0.1
+      - uses: actions/setup-node@v5.0.0
         with:
-          node-version: 20.19
+          node-version: 22.21
       - name: Install Renovate CLI
         run: npm install -g renovate
       - name: Dry run

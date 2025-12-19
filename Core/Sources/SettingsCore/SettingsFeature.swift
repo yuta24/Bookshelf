@@ -12,6 +12,7 @@ import Device
 import FeatureFlags
 import RemindClient
 import SyncClient
+import MigrationCore
 
 private let logger: Logger = .init(subsystem: "com.bivre.bookshelf.core", category: "SettingsFeature")
 
@@ -21,15 +22,20 @@ public struct SettingsFeature: Sendable {
     public struct Destination: Sendable {
         public enum State: Equatable, Sendable {
             case support(SupportFeature.State)
+            case migration(MigrationFeature.State)
         }
 
         public enum Action: Sendable {
             case support(SupportFeature.Action)
+            case migration(MigrationFeature.Action)
         }
 
         public var body: some ReducerOf<Self> {
             Scope(state: \.support, action: \.support) {
                 SupportFeature()
+            }
+            Scope(state: \.migration, action: \.migration) {
+                MigrationFeature()
             }
         }
     }
@@ -46,6 +52,7 @@ public struct SettingsFeature: Sendable {
         public var isProfileInstalled: Bool = false
         public var enableNotification: Bool = false
         public var enablePurchase: Bool = false
+        public var isMigrationCompleted: Bool = false
 
         @Presents
         public var destination: Destination.State?
@@ -76,6 +83,7 @@ public struct SettingsFeature: Sendable {
             case dayOfWeekChanged(DayOfWeek)
             case onSubscriptionStatusTask([Product.SubscriptionInfo.Status])
             case onSupportTapped
+            case onMigrationTapped
             case onNetworkTapped
             case onNetworkDismissed(Bool)
         }
@@ -108,6 +116,8 @@ public struct SettingsFeature: Sendable {
     var remindClient
     @Dependency(SyncClient.self)
     var syncClient
+    @Dependency(MigrationClient.self)
+    var migrationClient
 
     public init() {}
 
@@ -117,6 +127,13 @@ public struct SettingsFeature: Sendable {
             case .destination(.presented(.support(.delegate(.onInAppPurchased(.success(.success(.verified))))))):
                 state.destination = nil
                 return .none
+            case .destination(.presented(.migration(.delegate(.migrationCompleted)))):
+                // マイグレーション完了後、自動的にiCloud同期を有効化
+                state.isSyncEnabled = true
+                state.isMigrationCompleted = true
+                syncClient.update(.init(enabled: true))
+                // destinationは維持（アラートがdismissを処理）
+                return .none
             case .destination(.dismiss):
                 state.destination = nil
                 return .none
@@ -124,6 +141,7 @@ public struct SettingsFeature: Sendable {
                 return .none
             case .screen(.onLoad):
                 state.enablePurchase = featureFlags.enablePurchase()
+                state.isMigrationCompleted = migrationClient.isCompleted()
                 return .none
             case .screen(.task):
                 if state.enablePurchase {
@@ -172,6 +190,9 @@ public struct SettingsFeature: Sendable {
                 return .none
             case .screen(.onSupportTapped):
                 state.destination = .support(.init(groupID: state.groupID))
+                return .none
+            case .screen(.onMigrationTapped):
+                state.destination = .migration(.init())
                 return .none
             case .screen(.onNetworkTapped):
                 state.isNetworkActived = true
