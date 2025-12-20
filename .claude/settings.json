@@ -1,12 +1,14 @@
 {
+  "permissions": {
+    "allow": []
+  },
   "enabledMcpjsonServers": [
     "XcodeBuildMCP",
     "github",
     "asana"
   ],
-  "permissions": {
-    "allow": [
-      "Bash(make *)"
-    ]
+  "enabledPlugins": {
+    "github@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true
   }
 }
