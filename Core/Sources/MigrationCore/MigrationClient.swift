@@ -14,7 +14,7 @@ public struct MigrationClient: Sendable {
     public var getBookCount: @Sendable () async throws -> Int
 
     /// Perform migration from SwiftData to GRDB
-    public var performMigration: @Sendable (@escaping @Sendable (Int, Int) async -> Void) async throws -> Void
+    public var performMigration: @Sendable () async throws -> Void
 
     /// Mark migration as completed
     public var markCompleted: @Sendable () async throws -> Void

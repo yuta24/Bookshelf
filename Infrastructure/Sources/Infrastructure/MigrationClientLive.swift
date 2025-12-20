@@ -31,8 +31,8 @@ public extension MigrationClient {
             getBookCount: {
                 try await migrator.countBooksToMigrate()
             },
-            performMigration: { progressHandler in
-                try await migrator.migrate(progressHandler: progressHandler)
+            performMigration: {
+                try await migrator.migrate()
             },
             markCompleted: {
                 tracker.markSwiftDataMigrationCompleted()
