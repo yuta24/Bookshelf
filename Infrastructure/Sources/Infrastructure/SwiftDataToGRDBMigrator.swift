@@ -44,9 +44,7 @@ public struct SwiftDataToGRDBMigrator: Sendable {
     ///
     /// - Parameter progressHandler: Closure called with (current, total) for progress updates during read/conversion phase
     /// - Throws: Migration errors. All database writes are performed in a single atomic transaction and automatically rolled back on error.
-    public func migrate(
-        progressHandler: @escaping @Sendable (Int, Int) async -> Void
-    ) async throws {
+    public func migrate() async throws {
         logger.info("Starting SwiftData to GRDB migration...")
 
         // Step 1: Extract data from SwiftData
@@ -78,7 +76,6 @@ public struct SwiftDataToGRDBMigrator: Sendable {
             tags: tag2s,
             associations: associations,
             database: grdbDatabase,
-            progressHandler: progressHandler,
             totalItems: totalItems
         )
 
@@ -96,7 +93,6 @@ public struct SwiftDataToGRDBMigrator: Sendable {
         from swiftDataController: PersistenceController,
         to grdbDatabase: any DatabaseWriter
     ) async throws -> MigrationResult {
-        let context = swiftDataController.context
         logger.info("Starting SwiftData to GRDB migration...")
 
         // Step 1: Extract data from SwiftData
@@ -213,34 +209,19 @@ public struct SwiftDataToGRDBMigrator: Sendable {
         tags: [Tag2],
         associations: [UUID: [UUID]],
         database: any DatabaseWriter,
-        progressHandler: (@Sendable (Int, Int) async -> Void)? = nil,
         totalItems: Int = 0
     ) async throws {
-        let totalAssociations = associations.values.map { $0.count }.reduce(0, +)
-        let totalOperations = tags.count + books.count + totalAssociations
-        var currentProgress = 0
-
         // Execute all writes in a single atomic transaction
         try await database.write { db in
             // Insert tags first (books reference tags)
-            for (index, tag) in tags.enumerated() {
+            for tag in tags {
                 try Tag2.insert { tag }.execute(db)
-
-                currentProgress += 1
-                if let progressHandler = progressHandler, (index + 1) % 10 == 0 || index == tags.count - 1 {
-                    await progressHandler(currentProgress, totalOperations)
-                }
             }
             logger.debug("Inserted \(tags.count) tags")
 
             // Insert books
-            for (index, book) in books.enumerated() {
+            for book in books {
                 try Book2.insert { book }.execute(db)
-
-                currentProgress += 1
-                if let progressHandler = progressHandler, (index + 1) % 10 == 0 || index == books.count - 1 {
-                    await progressHandler(currentProgress, totalOperations)
-                }
             }
             logger.debug("Inserted \(books.count) books")
 
@@ -253,20 +234,11 @@ public struct SwiftDataToGRDBMigrator: Sendable {
                     try BookTag2.insert { bookTag }.execute(db)
 
                     associationCount += 1
-                    currentProgress += 1
-                    if let progressHandler = progressHandler, associationCount % 10 == 0 || currentProgress == totalOperations {
-                        await progressHandler(currentProgress, totalOperations)
-                    }
                 }
             }
             logger.debug("Inserted \(associationCount) book-tag associations")
         }
         // Transaction automatically commits if no error occurred, or rolls back if any error was thrown
-
-        // Ensure final progress is reported
-        if let progressHandler = progressHandler {
-            await progressHandler(totalOperations, totalOperations)
-        }
 
         logger.info("Successfully wrote all data to GRDB")
     }

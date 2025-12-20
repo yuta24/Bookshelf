@@ -43,7 +43,6 @@ public struct MigrationFeature: Sendable {
             case checkMigrationNeeded
             case migrationCheckCompleted(Bool, Int)
             case performMigration
-            case migrationProgress(Int, Int)
             case migrationCompleted
             case migrationFailed(String)
         }
@@ -114,21 +113,13 @@ public struct MigrationFeature: Sendable {
             case .internal(.performMigration):
                 return .run { send in
                     do {
-                        try await migrationClient.performMigration { current, total in
-                            await send(.internal(.migrationProgress(current, total)))
-                        }
+                        try await migrationClient.performMigration()
                         try await migrationClient.markCompleted()
                         await send(.internal(.migrationCompleted))
                     } catch {
                         await send(.internal(.migrationFailed(error.localizedDescription)))
                     }
                 }
-
-            case let .internal(.migrationProgress(current, total)):
-                state.migratedCount = current
-                let progress = total > 0 ? Double(current) / Double(total) : 0
-                state.migrationState = .migrating(progress: progress)
-                return .none
 
             case .internal(.migrationCompleted):
                 state.migrationState = .completed
