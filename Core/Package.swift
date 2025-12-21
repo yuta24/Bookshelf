@@ -243,6 +243,7 @@ let coreTargets: [Target] = [
             .target(name: .FeatureFlags),
             .target(name: .RemindClient),
             .target(name: .SyncClient),
+            .target(name: .MigrationCore),
             .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
