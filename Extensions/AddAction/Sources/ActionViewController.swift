@@ -10,6 +10,8 @@ import ShelfClient
 import ShelfClientLive
 import SearchClient
 import SearchClientLive
+import MigrationCore
+import SQLiteData
 
 @MainActor
 final class ActionViewModel: ObservableObject {
@@ -28,9 +30,29 @@ final class ActionViewModel: ObservableObject {
 
     private let session: URLSession = .shared
     private let search: SearchClient = .generate(.shared)
-    private let shelfClient: ShelfClient = .generate(.shared)
+    private let shelfClient: ShelfClient
+    private let persistence: PersistenceController = .shared
 
     private var task: Task<Void, Never>?
+
+    init() {
+        // swiftlint:disable:next force_cast
+        let appGroupsName = Bundle.main.object(forInfoDictionaryKey: "AppGroupsName") as! String
+
+        let database = try! createDatabase(id: appGroupsName, with: .default)
+
+        let migrationClient = MigrationClient.generate(
+            persistence: persistence,
+            grdbDatabase: database,
+            appGroupIdentifier: appGroupsName
+        )
+
+        let isMigrationCompleted = migrationClient.isCompleted()
+
+        self.shelfClient = isMigrationCompleted
+            ? .generateGRDB(database)
+            : .generate(persistence)
+    }
 
     func onReceive(_ url: URL) {
         // TODO: Check domain

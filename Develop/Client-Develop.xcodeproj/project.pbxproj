@@ -31,6 +31,7 @@
 		2B4620A12988149C00C0619C /* FeatureFlags+Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4620A02988149C00C0619C /* FeatureFlags+Impl.swift */; };
 		2B4680352826B88A005AA211 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 2B4680342826B88A005AA211 /* Presentation */; };
 		2B5C8CA52EE5D787006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA42EE5D787006E0B97 /* MigrationCore */; };
+		2B5C8CA62EE5D788006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA82EE5D789006E0B97 /* MigrationCore */; };
 		2B5CD8A82A46D9B2007EFFEF /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8A72A46D9B2007EFFEF /* InfoPlist.xcstrings */; };
 		2B5CD8AA2A46D9B2007EFFEF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8A92A46D9B2007EFFEF /* Localizable.xcstrings */; };
 		2B5F955D2B9946AB00CE092E /* GenreClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5F955C2B9946AB00CE092E /* GenreClientLive */; };
@@ -185,6 +186,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B5C8CA62EE5D788006E0B97 /* MigrationCore in Frameworks */,
 				2B0167EB2AF3FE95008F8BB9 /* TagClientLive in Frameworks */,
 				2B23310B2AD2EEDA005DF076 /* Infrastructure in Frameworks */,
 				2B0167DF2AF3F981008F8BB9 /* SearchClientLive in Frameworks */,
@@ -437,6 +439,7 @@
 				2B0167DE2AF3F981008F8BB9 /* SearchClientLive */,
 				2B0167EA2AF3FE95008F8BB9 /* TagClientLive */,
 				2B1963422BAA98E700B33496 /* ShelfClientLive */,
+				2B5C8CA82EE5D789006E0B97 /* MigrationCore */,
 			);
 			productName = AddActionExtension;
 			productReference = 2B6458392AD2B9D700AD4870 /* AddActionExtension.appex */;
@@ -1317,6 +1320,10 @@
 			productName = Presentation;
 		};
 		2B5C8CA42EE5D787006E0B97 /* MigrationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MigrationCore;
+		};
+		2B5C8CA82EE5D789006E0B97 /* MigrationCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MigrationCore;
 		};
