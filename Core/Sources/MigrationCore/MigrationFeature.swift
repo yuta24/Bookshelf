@@ -70,6 +70,8 @@ public struct MigrationFeature: Sendable {
         case alert(PresentationAction<Alert>)
     }
 
+    @Dependency(\.dismiss)
+    var dismiss
     @Dependency(\.migrationClient)
     var migrationClient
 
@@ -86,7 +88,9 @@ public struct MigrationFeature: Sendable {
                 return .send(.internal(.performMigration))
 
             case .screen(.skipMigration):
-                return .send(.external(.migrationSkipped))
+                return .run { _ in
+                    await dismiss()
+                }
 
             case .internal(.checkMigrationNeeded):
                 state.migrationState = .checking
@@ -124,13 +128,13 @@ public struct MigrationFeature: Sendable {
             case .internal(.migrationCompleted):
                 state.migrationState = .completed
                 state.completionAlert = AlertState {
-                    TextState("マイグレーション完了")
+                    TextState("alert.title.migration_completed")
                 } actions: {
                     ButtonState(action: .dismiss) {
-                        TextState("OK")
+                        TextState("button.title.close")
                     }
                 } message: {
-                    TextState("データベースの移行が完了しました。\niCloud同期が自動的に有効化されました。\n変更を反映するには、アプリを手動で再起動してください。")
+                    TextState("alert.message.migration_completed")
                 }
                 logger.info("Migration completed successfully")
                 return .none
