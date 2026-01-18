@@ -1,6 +1,5 @@
 appId: com.bivre.bookshelf.develop
 ---
-- launchApp
 - runFlow: ../common/flows/_open_app.yaml
 
 # 本棚→統計

@@ -32,7 +32,7 @@ screenshot: # screenshot: capture screenshot
 
 .PHONY: e2e-test
 e2e-test: # e2e-test: run E2E tests with Maestro
-	maestro test .maestro/smoke
+	maestro test .maestro
 
 .PHONY: e2e-test-smoke
 e2e-test-smoke: # e2e-test-smoke: run smoke tests only
