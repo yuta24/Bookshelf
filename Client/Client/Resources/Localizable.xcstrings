@@ -52,6 +52,23 @@
         }
       }
     },
+    "alert.message.migration_completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your book data has been successfully moved to the new storage system.\n\niCloud sync has been automatically enabled. Please restart the app to apply these changes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書籍データの移行が正常に完了しました。\n\niCloud同期が自動的に有効化されました。変更を反映するには、アプリを再起動してください。"
+          }
+        }
+      }
+    },
     "alert.message.not_found_book" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -235,6 +252,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "APIエラー"
+          }
+        }
+      }
+    },
+    "alert.title.migration_completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Migration Complete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データの移行が完了しました"
           }
         }
       }
@@ -528,6 +562,57 @@
         }
       }
     },
+    "button.title.migration_retry" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        }
+      }
+    },
+    "button.title.migration_skip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後で行う"
+          }
+        }
+      }
+    },
+    "button.title.migration_start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Migration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移行を開始"
+          }
+        }
+      }
+    },
     "button.title.open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -630,6 +715,23 @@
         }
       }
     },
+    "data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データ"
+          }
+        }
+      }
+    },
     "friday" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -677,6 +779,142 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ISBN"
+          }
+        }
+      }
+    },
+    "migration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Migration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データの移行"
+          }
+        }
+      }
+    },
+    "migration_books_count: %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld books found"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld冊のデータが見つかりました"
+          }
+        }
+      }
+    },
+    "migration_checking" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking for data to migrate..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移行するデータを確認中..."
+          }
+        }
+      }
+    },
+    "migration_completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Migration completed successfully"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移行が完了しました"
+          }
+        }
+      }
+    },
+    "migration_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We need to move your book data to our new storage system. Your data will be safely transferred and iCloud sync will be automatically enabled."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書籍データを新しい保存形式に移行する必要があります。データは安全に転送され、iCloud同期が自動的に有効になります。"
+          }
+        }
+      }
+    },
+    "migration_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Migration failed"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移行に失敗しました"
+          }
+        }
+      }
+    },
+    "migration_progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Migrating..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移行中..."
+          }
+        }
+      }
+    },
+    "migration_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Migration"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データの移行"
           }
         }
       }

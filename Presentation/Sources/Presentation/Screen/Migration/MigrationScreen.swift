@@ -63,19 +63,16 @@ struct MigrationScreen: View {
     private var idleView: some View {
         VStack(spacing: 16) {
             if store.bookCount > 0 {
-                Text("migration_books_count")
+                Text("migration_books_count: \(store.bookCount)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                + Text(" \(store.bookCount)")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
             }
 
             HStack(spacing: 12) {
                 Button {
                     store.send(.screen(.skipMigration))
                 } label: {
-                    Text("migration_skip")
+                    Text("button.title.migration_skip")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
@@ -83,7 +80,7 @@ struct MigrationScreen: View {
                 Button {
                     store.send(.screen(.startMigration))
                 } label: {
-                    Text("migration_start")
+                    Text("button.title.migration_start")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
@@ -144,7 +141,7 @@ struct MigrationScreen: View {
             Button {
                 store.send(.screen(.startMigration))
             } label: {
-                Text("migration_retry")
+                Text("button.title.migration_retry")
             }
             .buttonStyle(.borderedProminent)
         }
