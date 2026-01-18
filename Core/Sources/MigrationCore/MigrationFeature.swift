@@ -128,13 +128,13 @@ public struct MigrationFeature: Sendable {
             case .internal(.migrationCompleted):
                 state.migrationState = .completed
                 state.completionAlert = AlertState {
-                    TextState(String(localized: "alert.title.migration_completed"))
+                    TextState("alert.title.migration_completed")
                 } actions: {
                     ButtonState(action: .dismiss) {
-                        TextState(String(localized: "button.title.close"))
+                        TextState("button.title.close")
                     }
                 } message: {
-                    TextState(String(localized: "alert.message.migration_completed"))
+                    TextState("alert.message.migration_completed")
                 }
                 logger.info("Migration completed successfully")
                 return .none
