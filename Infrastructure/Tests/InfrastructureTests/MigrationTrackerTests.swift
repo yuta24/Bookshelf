@@ -2,6 +2,8 @@ import Testing
 import Foundation
 @testable import Infrastructure
 
+extension UserDefaults: @unchecked @retroactive Sendable {}
+
 /// Tests for MigrationTracker functionality
 @Suite("MigrationTracker Tests")
 struct MigrationTrackerTests {
@@ -28,7 +30,7 @@ struct MigrationTrackerTests {
     @Test("Fresh install: No SwiftData DB should auto-complete migration")
     func freshInstallAutoCompletes() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
         let mockFileManager = MockFileManager(fileExists: false)
         let swiftDataURL = createTempFileURL()
 
@@ -45,7 +47,7 @@ struct MigrationTrackerTests {
     @Test("Fresh install: Migration should be marked as completed")
     func freshInstallMarksCompleted() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
 
         #expect(!tracker.isSwiftDataMigrationCompleted())
 
@@ -62,7 +64,7 @@ struct MigrationTrackerTests {
     @Test("Existing data: SwiftData DB exists and not migrated should require migration")
     func existingDataRequiresMigration() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
         let mockFileManager = MockFileManager(fileExists: true)
         let swiftDataURL = createTempFileURL()
 
@@ -80,7 +82,7 @@ struct MigrationTrackerTests {
     @Test("Mark migration completed")
     func markMigrationCompleted() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
 
         #expect(!tracker.isSwiftDataMigrationCompleted())
 
@@ -92,7 +94,7 @@ struct MigrationTrackerTests {
     @Test("Already completed: Should not require migration even with DB present")
     func alreadyCompletedDoesNotRequireMigration() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
         let mockFileManager = MockFileManager(fileExists: true)
         let swiftDataURL = createTempFileURL()
 
@@ -113,7 +115,7 @@ struct MigrationTrackerTests {
     @Test("Version tracking: Should store migration version")
     func migrationVersionTracking() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
 
         tracker.markSwiftDataMigrationCompleted()
 
@@ -126,7 +128,7 @@ struct MigrationTrackerTests {
     @Test("Reset migration: Can reset and require migration again")
     func resetMigration() throws {
         let defaults = createTestUserDefaults()
-        let tracker = MigrationTracker(userDefaults: defaults)
+        let tracker = MigrationTracker(userDefaults: { defaults })
         let mockFileManager = MockFileManager(fileExists: true)
         let swiftDataURL = createTempFileURL()
 
