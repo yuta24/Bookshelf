@@ -19,7 +19,7 @@ jobs:
         with:
           bundler-cache: true
       - name: Cache SPM packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
@@ -28,14 +28,14 @@ jobs:
           restore-keys: |
             spm-${{ runner.os }}-
       - name: Cache DerivedData
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: deriveddata-${{ runner.os }}-${{ hashFiles('**/*.swift', '**/Package.resolved') }}
           restore-keys: |
             deriveddata-${{ runner.os }}-
       - name: Cache tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: tools
           key: tools-${{ runner.os }}-${{ hashFiles('scripts/tool/*.sh') }}
