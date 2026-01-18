@@ -21,4 +21,4 @@ set -o pipefail && env NSUnbufferedIO=YES \
   -resultBundlePath ${GIT_REPO}/test_output/Tests.xcresult \
   -enableCodeCoverage YES \
   -skipMacroValidation \
-  clean test 2>&1 | ${GIT_REPO}/tools/xcbeautify
+  test 2>&1 | ${GIT_REPO}/tools/xcbeautify
