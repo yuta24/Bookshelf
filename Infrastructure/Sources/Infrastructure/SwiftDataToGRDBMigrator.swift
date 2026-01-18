@@ -82,62 +82,6 @@ public struct SwiftDataToGRDBMigrator: Sendable {
         logger.info("Migration completed successfully")
     }
 
-    /// Migrate data from SwiftData to GRDB in an atomic transaction (static version for backward compatibility)
-    ///
-    /// - Parameters:
-    ///   - swiftDataController: Source PersistenceController containing SwiftData
-    ///   - grdbDatabase: Target GRDB DatabaseWriter
-    /// - Returns: MigrationResult with statistics
-    /// - Throws: Migration errors. All database writes are performed in a single atomic transaction and automatically rolled back on error.
-    public static func migrate(
-        from swiftDataController: PersistenceController,
-        to grdbDatabase: any DatabaseWriter
-    ) async throws -> MigrationResult {
-        logger.info("Starting SwiftData to GRDB migration...")
-
-        // Step 1: Extract data from SwiftData
-        let (bookRecords, tagRecords) = try await extractSwiftDataRecords(from: swiftDataController)
-
-        logger.info("Extracted \(bookRecords.count) books and \(tagRecords.count) tags from SwiftData")
-
-        // Step 2: Convert records to GRDB models
-        let (book2s, booksSkipped) = convertBooks(bookRecords)
-        let (tag2s, tagsSkipped) = convertTags(tagRecords)
-        let rawAssociations = RecordConversion.extractBookTagAssociations(bookRecords)
-
-        // Filter associations to only include tags that were successfully converted
-        let validTagIds = Set(tag2s.map { $0.id })
-        let associations = rawAssociations.mapValues { tagIds in
-            tagIds.filter { validTagIds.contains($0) }
-        }.filter { !$0.value.isEmpty }
-
-        logger.info("Converted \(book2s.count) books (skipped \(booksSkipped)) and \(tag2s.count) tags (skipped \(tagsSkipped))")
-
-        if booksSkipped > 0 || tagsSkipped > 0 {
-            logger.warning("Skipped \(booksSkipped) books and \(tagsSkipped) tags due to missing required fields")
-        }
-
-        // Step 3: Write to GRDB in a single atomic transaction
-        try await writeToGRDB(
-            books: book2s,
-            tags: tag2s,
-            associations: associations,
-            database: grdbDatabase
-        )
-
-        let result = MigrationResult(
-            booksConverted: book2s.count,
-            tagsConverted: tag2s.count,
-            booksSkipped: booksSkipped,
-            tagsSkipped: tagsSkipped,
-            associations: associations.values.map { $0.count }.reduce(0, +)
-        )
-
-        logger.info("Migration completed successfully: \(result.totalConverted) records converted, \(result.totalSkipped) skipped")
-
-        return result
-    }
-
     // MARK: - Private Helper Methods
 
     /// Extract all records from SwiftData

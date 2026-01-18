@@ -10,10 +10,10 @@ commands:
 jobs:
   test:
     macos:
-      xcode: 16.4.0
+      xcode: 26.2.0
     environment:
-      TEST_OS: 18.5
-      TEST_DEVICE: iPhone 16 Pro
+      TEST_OS: 26.2
+      TEST_DEVICE: iPhone 17 Pro
     steps:
       - checkout
       - restore_cache:
@@ -26,7 +26,6 @@ jobs:
       - store_artifacts:
           path: Presentation/Tests/PresentationTests/__Snapshots__
           destination: snapshot-test-images
-          when: always
       - save_cache:
           key: v1-spm-dependencies-{{ checksum "Bookshelf.xcworkspace/xcshareddata/swiftpm/Package.resolved" }}-{{ checksum "Core/Package.resolved" }}-{{ checksum "Infrastructure/Package.resolved" }}-{{ checksum "Presentation/Package.resolved" }}
           paths:

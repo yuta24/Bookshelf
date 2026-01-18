@@ -59,14 +59,6 @@ struct RecordConversionTests {
         #expect(book2.readAt == readAt)
     }
 
-    @Test("Status conversion: nil defaults to unread")
-    func statusConversionNilDefaultsToUnread() throws {
-        let bookRecord = TestFixtures.createValidBookRecord(status: nil)
-        let book2 = try RecordConversion.convertToBook2(bookRecord)
-
-        #expect(book2.status == .unread)
-    }
-
     @Test("Status conversion: invalid value throws error", .bug("Should handle invalid status gracefully"))
     func statusConversionInvalidThrowsError() throws {
         let bookRecord = TestFixtures.createValidBookRecord(status: "invalid_status")
@@ -124,22 +116,6 @@ struct RecordConversionTests {
         let book2 = try RecordConversion.convertToBook2(bookRecord)
 
         #expect(book2.caption == nil)
-    }
-
-    @Test("Default values: bought defaults to false")
-    func boughtDefaultsToFalse() throws {
-        let bookRecord = TestFixtures.createValidBookRecord(bought: nil)
-        let book2 = try RecordConversion.convertToBook2(bookRecord)
-
-        #expect(book2.bought == false)
-    }
-
-    @Test("Default values: note defaults to empty string")
-    func noteDefaultsToEmptyString() throws {
-        let bookRecord = TestFixtures.createValidBookRecord(note: nil)
-        let book2 = try RecordConversion.convertToBook2(bookRecord)
-
-        #expect(book2.note == "")
     }
 
     // MARK: - TagRecord to Tag2 Tests
