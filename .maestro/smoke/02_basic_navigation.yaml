@@ -1,0 +1,31 @@
+appId: com.bivre.bookshelf.develop
+---
+- launchApp
+- runFlow: ../common/flows/_open_app.yaml
+
+# 本棚→統計
+- tapOn:
+    label: "screen.title.statistics"
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.statistics"
+- assertVisible:
+    id: "chart.bar"
+
+# 統計→設定
+- tapOn:
+    label: "screen.title.settings"
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.settings"
+- assertVisible:
+    id: "gear"
+
+# 設定→本棚
+- tapOn:
+    label: "screen.title.shelf"
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.shelf"
+- assertVisible:
+    id: "books.vertical"

@@ -1,0 +1,40 @@
+appId: com.bivre.bookshelf.develop
+---
+- launchApp
+- runFlow: ../common/flows/_open_app.yaml
+
+# 追加ボタンをタップ
+- tapOn:
+    label: "button.title.add_book"
+
+# 追加画面が開くことを確認
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.register_book"
+
+# 検索フィールドに入力
+- tapOn:
+    label: "add.screen.search.placeholder"
+- inputText: "Swift"
+
+# 検索実行（エンターキー）
+- pressKey: Enter
+
+# 検索結果を待機
+- waitForAnimationToEnd
+
+# 最初の検索結果をタップ
+- tapOn:
+    index: 0
+
+# 選択状態を確認（ボタンが有効になる）
+- waitForAnimationToEnd
+
+# 登録ボタンをタップ
+- tapOn:
+    label: "button.title.register"
+
+# 本棚に戻ることを確認
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.shelf"
