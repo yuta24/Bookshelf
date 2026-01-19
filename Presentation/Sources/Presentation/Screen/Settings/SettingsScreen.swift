@@ -4,6 +4,8 @@ import Inject
 import PulseUI
 import RemindModel
 import SettingsCore
+import UniformTypeIdentifiers
+import BookModel
 
 extension DayOfWeek {
     var key: String {
@@ -67,6 +69,11 @@ struct SettingsScreen: View {
 
     @ObserveInjection
     var inject
+
+    @State
+    var isImporting: Bool = false
+    @State
+    var isExporting: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -141,6 +148,23 @@ struct SettingsScreen: View {
                     }
                 }
 
+                // データ管理セクション
+                Section {
+                    Button {
+                        isExporting = true
+                    } label: {
+                        Label("export_data", systemImage: "square.and.arrow.up")
+                    }
+
+                    Button {
+                        isImporting = true
+                    } label: {
+                        Label("import_data", systemImage: "square.and.arrow.down")
+                    }
+                } header: {
+                    Text("data_management")
+                }
+
                 Section {
                     Link("contact_us", destination: URL(string: "https://forms.gle/zqRXY74UU7WH9vf58")!)
                         .foregroundStyle(Color(.label))
@@ -192,9 +216,71 @@ struct SettingsScreen: View {
         }
         .task { store.send(.screen(.task)) }
         .onLoad { store.send(.screen(.onLoad)) }
+        .fileExporter(
+            isPresented: $isExporting,
+            document: ExportableDocument(books: store.booksForExport),
+            contentType: .plainText,
+            onCompletion: { result in
+                switch result {
+                case .success:
+                    break
+                case .failure:
+                    break
+                }
+            }
+        )
+        .fileImporter(
+            isPresented: $isImporting,
+            allowedContentTypes: [.plainText],
+            onCompletion: { result in
+                switch result {
+                case let .success(url):
+                    store.send(.screen(.onImportTapped(url)))
+                case .failure:
+                    break
+                }
+            }
+        )
         .subscriptionStatusTask(for: store.groupID) { state in
             store.send(.screen(.onSubscriptionStatusTask(state.value ?? [])))
         }
         .enableInjection()
+    }
+}
+
+private struct ExportableDocument: FileDocument {
+    enum Constant {
+        static let encoder: JSONEncoder = {
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            return encoder
+        }()
+
+        static let decoder: JSONDecoder = {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            return decoder
+        }()
+    }
+
+    static let readableContentTypes: [UTType] = [.plainText]
+
+    var books: IdentifiedArrayOf<Book> = []
+
+    init(books: IdentifiedArrayOf<Book>) {
+        self.books = books
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        guard let data = configuration.file.regularFileContents else {
+            return
+        }
+
+        self.books = try Constant.decoder.decode(IdentifiedArrayOf<Book>.self, from: data)
+    }
+
+    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
+        let data = try Constant.encoder.encode(books)
+        return .init(regularFileWithContents: data)
     }
 }

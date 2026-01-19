@@ -4,6 +4,7 @@ public import ComposableArchitecture
 
 public import RemindModel
 
+import Tagged
 import Foundation
 import OSLog
 import CasePaths
@@ -13,6 +14,8 @@ import FeatureFlags
 import RemindClient
 import SyncClient
 import MigrationCore
+import ShelfClient
+import BookModel
 
 private let logger: Logger = .init(subsystem: "com.bivre.bookshelf.core", category: "SettingsFeature")
 
@@ -54,6 +57,9 @@ public struct SettingsFeature: Sendable {
         public var enablePurchase: Bool = false
         public var isMigrationCompleted: Bool = false
 
+        // エクスポート用の書籍データ
+        public var booksForExport: IdentifiedArrayOf<Book> = []
+
         @Presents
         public var destination: Destination.State?
 
@@ -86,12 +92,17 @@ public struct SettingsFeature: Sendable {
             case onMigrationTapped
             case onNetworkTapped
             case onNetworkDismissed(Bool)
+            case onExportTapped
+            case onImportTapped(URL)
         }
 
         @CasePathable
         public enum InternalAction: Sendable {
             case load
             case loaded(TaskResult<(Bool, Remind, String, Int, Bool)>) // swiftlint:disable:this large_tuple
+            case export(TaskResult<IdentifiedArrayOf<Book>>)
+            case `import`(URL)
+            case imported(Result<[Book], any Error>)
         }
 
         @CasePathable
@@ -118,6 +129,8 @@ public struct SettingsFeature: Sendable {
     var syncClient
     @Dependency(MigrationClient.self)
     var migrationClient
+    @Dependency(ShelfClient.self)
+    var shelfClient
 
     public init() {}
 
@@ -199,6 +212,50 @@ public struct SettingsFeature: Sendable {
                 return .none
             case let .screen(.onNetworkDismissed(isActived)):
                 state.isNetworkActived = isActived
+                return .none
+            case .screen(.onExportTapped):
+                return .run { send in
+                    let books = try await shelfClient.fetchAll(nil)
+                    await send(.internal(.export(.success(IdentifiedArrayOf(uniqueElements: books)))))
+                } catch: { error, send in
+                    await send(.internal(.export(.failure(error))))
+                }
+            case let .internal(.export(.success(books))):
+                state.booksForExport = books
+                return .none
+            case .internal(.export(.failure)):
+                // TODO: エラーハンドリング（アラート表示など）
+                return .none
+            case let .screen(.onImportTapped(url)):
+                return .send(.internal(.import(url)))
+            case let .internal(.import(url)):
+                return .run { send in
+                    let accessing = url.startAccessingSecurityScopedResource()
+                    defer {
+                        if accessing {
+                            url.stopAccessingSecurityScopedResource()
+                        }
+                    }
+
+                    let decoder: JSONDecoder = {
+                        let decoder = JSONDecoder()
+                        decoder.dateDecodingStrategy = .iso8601
+                        return decoder
+                    }()
+                    let data = try Data(contentsOf: url)
+                    let books = try decoder.decode([Book].self, from: data)
+
+                    try await shelfClient.resume(books)
+
+                    await send(.internal(.imported(.success(books))))
+                } catch: { error, send in
+                    await send(.internal(.imported(.failure(error))))
+                }
+            case let .internal(.imported(.success(books))):
+                // TODO: 成功時のフィードバック（アラート表示など）
+                return .none
+            case .internal(.imported(.failure)):
+                // TODO: エラーハンドリング（アラート表示など）
                 return .none
             case .internal(.load):
                 return .run { send in
