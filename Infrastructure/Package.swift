@@ -40,6 +40,16 @@ let targets: [Target] = [
         swiftSettings: defaultSwiftSettings
     ),
     .target(
+        name: "DataClientLive",
+        dependencies: [
+            .product(name: "DataClient", package: "Core"),
+            .product(name: "ShelfClient", package: "Core"),
+            .product(name: "TagClient", package: "Core"),
+            .product(name: "BookModel", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
         name: "GenreClientLive",
         dependencies: [
             .product(name: "GenreClient", package: "Core"),
@@ -139,6 +149,10 @@ let package = Package(
         .library(
             name: "BookClientLive",
             targets: ["BookClientLive"]
+        ),
+        .library(
+            name: "DataClientLive",
+            targets: ["DataClientLive"]
         ),
         .library(
             name: "GenreClientLive",

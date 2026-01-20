@@ -30,6 +30,7 @@
 		2B26AC4D2BB7D4470003659A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2B26AC492BB7D3D10003659A /* PrivacyInfo.xcprivacy */; };
 		2B26AC502BB7D46B0003659A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2B26AC4E2BB7D4660003659A /* PrivacyInfo.xcprivacy */; };
 		2B2F67DE26861FB4007C8F5D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2F67DD26861FB4007C8F5D /* CloudKit.framework */; };
+		2B429A782F1F1C4100498F99 /* DataClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2B429A772F1F1C4100498F99 /* DataClientLive */; };
 		2B46209F2988142D00C0619C /* FeatureFlags+Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B46209E2988142D00C0619C /* FeatureFlags+Impl.swift */; };
 		2B4680352826B88A005AA211 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 2B4680342826B88A005AA211 /* Presentation */; };
 		2B5C8CA72EE5D794006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA62EE5D794006E0B97 /* MigrationCore */; };
@@ -199,6 +200,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B429A782F1F1C4100498F99 /* DataClientLive in Frameworks */,
 				2B5F955F2B9946B200CE092E /* GenreClientLive in Frameworks */,
 				2B8CA95F2AF61AE000642DEC /* RemindClientLive in Frameworks */,
 				2BA200522E12DF2000956E89 /* PreReleaseNotificationClientLive in Frameworks */,
@@ -475,6 +477,7 @@
 				2B19633A2BAA98B300B33496 /* ShelfClientLive */,
 				2B7740FB2BABB46B00AB4F26 /* BookClientLive */,
 				2BA200512E12DF2000956E89 /* PreReleaseNotificationClientLive */,
+				2B429A772F1F1C4100498F99 /* DataClientLive */,
 			);
 			productName = Client;
 			productReference = 2BB43B402677992900497798 /* Client.app */;
@@ -1169,6 +1172,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2B2331182AD2F245005DF076 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		2B429A772F1F1C4100498F99 /* DataClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataClientLive;
 		};
 		2B4680342826B88A005AA211 /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;

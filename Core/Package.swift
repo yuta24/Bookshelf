@@ -36,6 +36,7 @@ extension String {
     // Client
     static let AnalyticsClient = "AnalyticsClient"
     static let BookClient = "BookClient"
+    static let DataClient = "DataClient"
     static let GenreClient = "GenreClient"
     static let PushClient = "PushClient"
     static let RemindClient = "RemindClient"
@@ -135,6 +136,14 @@ let clientTargets: [Target] = [
         dependencies: [
             .target(name: .BookModel),
             .target(name: .GenreModel),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
+        name: .DataClient,
+        dependencies: [
+            .target(name: .BookModel),
             .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
@@ -242,6 +251,7 @@ let coreTargets: [Target] = [
             .target(name: .Device),
             .target(name: .FeatureFlags),
             .target(name: .BookModel),
+            .target(name: .DataClient),
             .target(name: .RemindClient),
             .target(name: .ShelfClient),
             .target(name: .SyncClient),
@@ -291,6 +301,7 @@ let package = Package(
         // Client
         .library(name: .AnalyticsClient, targets: [.AnalyticsClient]),
         .library(name: .BookClient, targets: [.BookClient]),
+        .library(name: .DataClient, targets: [.DataClient]),
         .library(name: .GenreClient, targets: [.GenreClient]),
         .library(name: .PushClient, targets: [.PushClient]),
         .library(name: .RemindClient, targets: [.RemindClient]),

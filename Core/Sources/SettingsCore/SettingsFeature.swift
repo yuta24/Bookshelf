@@ -16,6 +16,7 @@ import SyncClient
 import MigrationCore
 import ShelfClient
 import BookModel
+import DataClient
 
 private let logger: Logger = .init(subsystem: "com.bivre.bookshelf.core", category: "SettingsFeature")
 
@@ -57,8 +58,7 @@ public struct SettingsFeature: Sendable {
         public var enablePurchase: Bool = false
         public var isMigrationCompleted: Bool = false
 
-        // エクスポート用の書籍データ
-        public var booksForExport: IdentifiedArrayOf<Book> = []
+        public var exportData: ExportData?
 
         @Presents
         public var destination: Destination.State?
@@ -100,9 +100,9 @@ public struct SettingsFeature: Sendable {
         public enum InternalAction: Sendable {
             case load
             case loaded(TaskResult<(Bool, Remind, String, Int, Bool)>) // swiftlint:disable:this large_tuple
-            case export(TaskResult<IdentifiedArrayOf<Book>>)
+            case export(TaskResult<ExportData>)
             case `import`(URL)
-            case imported(Result<[Book], any Error>)
+            case imported(Result<ImportResult, any Error>)
         }
 
         @CasePathable
@@ -131,6 +131,8 @@ public struct SettingsFeature: Sendable {
     var migrationClient
     @Dependency(ShelfClient.self)
     var shelfClient
+    @Dependency(DataClient.self)
+    var dataExportClient
 
     public init() {}
 
@@ -215,13 +217,16 @@ public struct SettingsFeature: Sendable {
                 return .none
             case .screen(.onExportTapped):
                 return .run { send in
-                    let books = try await shelfClient.fetchAll(nil)
-                    await send(.internal(.export(.success(IdentifiedArrayOf(uniqueElements: books)))))
+                    let data = try await dataExportClient.export()
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .iso8601
+                    let exportData = try decoder.decode(ExportData.self, from: data)
+                    await send(.internal(.export(.success(exportData))))
                 } catch: { error, send in
                     await send(.internal(.export(.failure(error))))
                 }
-            case let .internal(.export(.success(books))):
-                state.booksForExport = books
+            case let .internal(.export(.success(exportData))):
+                state.exportData = exportData
                 return .none
             case .internal(.export(.failure)):
                 // TODO: エラーハンドリング（アラート表示など）
@@ -237,22 +242,14 @@ public struct SettingsFeature: Sendable {
                         }
                     }
 
-                    let decoder: JSONDecoder = {
-                        let decoder = JSONDecoder()
-                        decoder.dateDecodingStrategy = .iso8601
-                        return decoder
-                    }()
                     let data = try Data(contentsOf: url)
-                    let books = try decoder.decode([Book].self, from: data)
-
-                    try await shelfClient.resume(books)
-
-                    await send(.internal(.imported(.success(books))))
+                    let result = try await dataExportClient.import(data)
+                    await send(.internal(.imported(.success(result))))
                 } catch: { error, send in
                     await send(.internal(.imported(.failure(error))))
                 }
-            case let .internal(.imported(.success(books))):
-                // TODO: 成功時のフィードバック（アラート表示など）
+            case let .internal(.imported(.success(result))):
+                // TODO: result.importedBooksCount, result.importedTagsCount を表示
                 return .none
             case .internal(.imported(.failure)):
                 // TODO: エラーハンドリング（アラート表示など）

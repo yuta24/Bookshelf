@@ -6,6 +6,7 @@ import RemindModel
 import SettingsCore
 import UniformTypeIdentifiers
 import BookModel
+import DataClient
 
 extension DayOfWeek {
     var key: String {
@@ -218,7 +219,7 @@ struct SettingsScreen: View {
         .onLoad { store.send(.screen(.onLoad)) }
         .fileExporter(
             isPresented: $isExporting,
-            document: ExportableDocument(books: store.booksForExport),
+            document: store.exportData.map { ExportableDocument(exportData: $0) },
             contentType: .plainText,
             onCompletion: { result in
                 switch result {
@@ -253,6 +254,7 @@ private struct ExportableDocument: FileDocument {
         static let encoder: JSONEncoder = {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             return encoder
         }()
 
@@ -265,22 +267,22 @@ private struct ExportableDocument: FileDocument {
 
     static let readableContentTypes: [UTType] = [.plainText]
 
-    var books: IdentifiedArrayOf<Book> = []
+    var exportData: ExportData
 
-    init(books: IdentifiedArrayOf<Book>) {
-        self.books = books
+    init(exportData: ExportData) {
+        self.exportData = exportData
     }
 
     init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents else {
-            return
+            throw DataExportError.invalidData
         }
 
-        self.books = try Constant.decoder.decode(IdentifiedArrayOf<Book>.self, from: data)
+        self.exportData = try Constant.decoder.decode(ExportData.self, from: data)
     }
 
     func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
-        let data = try Constant.encoder.encode(books)
+        let data = try Constant.encoder.encode(exportData)
         return .init(regularFileWithContents: data)
     }
 }
