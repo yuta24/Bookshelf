@@ -48,6 +48,7 @@ extension String {
 
     // Core
     static let BookCore = "BookCore"
+    static let DataManagementCore = "DataManagementCore"
     static let MigrationCore = "MigrationCore"
     static let SettingsCore = "SettingsCore"
     static let StatisticsCore = "StatisticsCore"
@@ -238,6 +239,15 @@ let coreTargets: [Target] = [
         swiftSettings: defaultSwiftSettings
     ),
     .target(
+        name: .DataManagementCore,
+        dependencies: [
+            .target(name: .BookModel),
+            .target(name: .DataClient),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
         name: .MigrationCore,
         dependencies: [
             .ComposableArchitecture,
@@ -248,6 +258,7 @@ let coreTargets: [Target] = [
         name: .SettingsCore,
         dependencies: [
             .target(name: .Application),
+            .target(name: .DataManagementCore),
             .target(name: .Device),
             .target(name: .FeatureFlags),
             .target(name: .BookModel),
@@ -313,6 +324,7 @@ let package = Package(
 
         // Core
         .library(name: .BookCore, targets: [.BookCore]),
+        .library(name: .DataManagementCore, targets: [.DataManagementCore]),
         .library(name: .MigrationCore, targets: [.MigrationCore]),
         .library(name: .SettingsCore, targets: [.SettingsCore]),
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),

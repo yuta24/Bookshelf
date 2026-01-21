@@ -14,6 +14,7 @@ import FeatureFlags
 import RemindClient
 import SyncClient
 import MigrationCore
+import DataManagementCore
 import ShelfClient
 import BookModel
 import DataClient
@@ -27,11 +28,13 @@ public struct SettingsFeature: Sendable {
         public enum State: Equatable, Sendable {
             case support(SupportFeature.State)
             case migration(MigrationFeature.State)
+            case dataManagement(DataManagementFeature.State)
         }
 
         public enum Action: Sendable {
             case support(SupportFeature.Action)
             case migration(MigrationFeature.Action)
+            case dataManagement(DataManagementFeature.Action)
         }
 
         public var body: some ReducerOf<Self> {
@@ -40,6 +43,9 @@ public struct SettingsFeature: Sendable {
             }
             Scope(state: \.migration, action: \.migration) {
                 MigrationFeature()
+            }
+            Scope(state: \.dataManagement, action: \.dataManagement) {
+                DataManagementFeature()
             }
         }
     }
@@ -57,8 +63,6 @@ public struct SettingsFeature: Sendable {
         public var enableNotification: Bool = false
         public var enablePurchase: Bool = false
         public var isMigrationCompleted: Bool = false
-
-        public var exportData: ExportData?
 
         @Presents
         public var destination: Destination.State?
@@ -92,17 +96,13 @@ public struct SettingsFeature: Sendable {
             case onMigrationTapped
             case onNetworkTapped
             case onNetworkDismissed(Bool)
-            case onExportTapped
-            case onImportTapped(URL)
+            case onDataManagementTapped
         }
 
         @CasePathable
         public enum InternalAction: Sendable {
             case load
             case loaded(TaskResult<(Bool, Remind, String, Int, Bool)>) // swiftlint:disable:this large_tuple
-            case export(TaskResult<ExportData>)
-            case `import`(URL)
-            case imported(Result<ImportResult, any Error>)
         }
 
         @CasePathable
@@ -131,8 +131,6 @@ public struct SettingsFeature: Sendable {
     var migrationClient
     @Dependency(ShelfClient.self)
     var shelfClient
-    @Dependency(DataClient.self)
-    var dataExportClient
 
     public init() {}
 
@@ -215,44 +213,8 @@ public struct SettingsFeature: Sendable {
             case let .screen(.onNetworkDismissed(isActived)):
                 state.isNetworkActived = isActived
                 return .none
-            case .screen(.onExportTapped):
-                return .run { send in
-                    let data = try await dataExportClient.export()
-                    let decoder = JSONDecoder()
-                    decoder.dateDecodingStrategy = .iso8601
-                    let exportData = try decoder.decode(ExportData.self, from: data)
-                    await send(.internal(.export(.success(exportData))))
-                } catch: { error, send in
-                    await send(.internal(.export(.failure(error))))
-                }
-            case let .internal(.export(.success(exportData))):
-                state.exportData = exportData
-                return .none
-            case .internal(.export(.failure)):
-                // TODO: エラーハンドリング（アラート表示など）
-                return .none
-            case let .screen(.onImportTapped(url)):
-                return .send(.internal(.import(url)))
-            case let .internal(.import(url)):
-                return .run { send in
-                    let accessing = url.startAccessingSecurityScopedResource()
-                    defer {
-                        if accessing {
-                            url.stopAccessingSecurityScopedResource()
-                        }
-                    }
-
-                    let data = try Data(contentsOf: url)
-                    let result = try await dataExportClient.import(data)
-                    await send(.internal(.imported(.success(result))))
-                } catch: { error, send in
-                    await send(.internal(.imported(.failure(error))))
-                }
-            case let .internal(.imported(.success(result))):
-                // TODO: result.importedBooksCount, result.importedTagsCount を表示
-                return .none
-            case .internal(.imported(.failure)):
-                // TODO: エラーハンドリング（アラート表示など）
+            case .screen(.onDataManagementTapped):
+                state.destination = .dataManagement(.init())
                 return .none
             case .internal(.load):
                 return .run { send in

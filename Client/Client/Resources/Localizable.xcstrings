@@ -613,6 +613,23 @@
         }
       }
     },
+    "button.title.ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
     "button.title.open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -749,6 +766,23 @@
         }
       }
     },
+    "data_management_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup and restore your data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データのバックアップや復元を行います"
+          }
+        }
+      }
+    },
     "export_data" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -779,6 +813,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "データをインポート"
+          }
+        }
+      }
+    },
+    "import_completed_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported %d books and %d tags"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d冊の書籍、%d個のタグをインポートしました"
+          }
+        }
+      }
+    },
+    "import_completed_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Complete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インポート完了"
           }
         }
       }
@@ -1544,6 +1612,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
+          }
+        }
+      }
+    },
+    "screen.title.data_management" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Management"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データ管理"
           }
         }
       }

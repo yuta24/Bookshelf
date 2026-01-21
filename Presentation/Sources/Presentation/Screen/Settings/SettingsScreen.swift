@@ -4,9 +4,9 @@ import Inject
 import PulseUI
 import RemindModel
 import SettingsCore
+import DataManagementCore
 import UniformTypeIdentifiers
 import BookModel
-import DataClient
 
 extension DayOfWeek {
     var key: String {
@@ -70,11 +70,6 @@ struct SettingsScreen: View {
 
     @ObserveInjection
     var inject
-
-    @State
-    var isImporting: Bool = false
-    @State
-    var isExporting: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -152,15 +147,9 @@ struct SettingsScreen: View {
                 // データ管理セクション
                 Section {
                     Button {
-                        isExporting = true
+                        store.send(.screen(.onDataManagementTapped))
                     } label: {
-                        Label("export_data", systemImage: "square.and.arrow.up")
-                    }
-
-                    Button {
-                        isImporting = true
-                    } label: {
-                        Label("import_data", systemImage: "square.and.arrow.down")
+                        Label("data_management", systemImage: "folder.badge.gearshape")
                     }
                 } header: {
                     Text("data_management")
@@ -206,6 +195,9 @@ struct SettingsScreen: View {
             .sheet(item: $store.scope(state: \.destination?.migration, action: \.destination.migration), content: { store in
                 MigrationScreen(store: store)
             })
+            .sheet(item: $store.scope(state: \.destination?.dataManagement, action: \.destination.dataManagement), content: { store in
+                DataManagementScreen(store: store)
+            })
             .sheet(
                 isPresented: $store.isNetworkActived.sending(\.screen.onNetworkDismissed),
                 content: {
@@ -217,72 +209,9 @@ struct SettingsScreen: View {
         }
         .task { store.send(.screen(.task)) }
         .onLoad { store.send(.screen(.onLoad)) }
-        .fileExporter(
-            isPresented: $isExporting,
-            document: store.exportData.map { ExportableDocument(exportData: $0) },
-            contentType: .plainText,
-            onCompletion: { result in
-                switch result {
-                case .success:
-                    break
-                case .failure:
-                    break
-                }
-            }
-        )
-        .fileImporter(
-            isPresented: $isImporting,
-            allowedContentTypes: [.plainText],
-            onCompletion: { result in
-                switch result {
-                case let .success(url):
-                    store.send(.screen(.onImportTapped(url)))
-                case .failure:
-                    break
-                }
-            }
-        )
         .subscriptionStatusTask(for: store.groupID) { state in
             store.send(.screen(.onSubscriptionStatusTask(state.value ?? [])))
         }
         .enableInjection()
-    }
-}
-
-private struct ExportableDocument: FileDocument {
-    enum Constant {
-        static let encoder: JSONEncoder = {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .iso8601
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            return encoder
-        }()
-
-        static let decoder: JSONDecoder = {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            return decoder
-        }()
-    }
-
-    static let readableContentTypes: [UTType] = [.plainText]
-
-    var exportData: ExportData
-
-    init(exportData: ExportData) {
-        self.exportData = exportData
-    }
-
-    init(configuration: ReadConfiguration) throws {
-        guard let data = configuration.file.regularFileContents else {
-            throw DataExportError.invalidData
-        }
-
-        self.exportData = try Constant.decoder.decode(ExportData.self, from: data)
-    }
-
-    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
-        let data = try Constant.encoder.encode(exportData)
-        return .init(regularFileWithContents: data)
     }
 }
