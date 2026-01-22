@@ -231,6 +231,7 @@ let coreTargets: [Target] = [
             .target(name: .ShelfClient),
             .target(name: .PreReleaseNotificationModel),
             .target(name: .PreReleaseNotificationClient),
+            .target(name: .PushClient),
             .ComposableArchitecture,
             .SwiftNavigation,
             .OrderedCollections,

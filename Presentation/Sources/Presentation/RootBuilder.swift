@@ -30,6 +30,8 @@ public import MigrationCore
 
 public import DataClient
 
+public import PushClient
+
 import ComposableArchitecture
 import GRDB
 import SQLiteData
@@ -61,6 +63,7 @@ public enum RootBuilder {
         public var widget: WidgetUpdater
         public var migrationClient: MigrationClient
         public var dataClient: DataClient
+        public var pushClient: PushClient
 
         public init(
             analyticsClient: AnalyticsClient,
@@ -79,7 +82,8 @@ public enum RootBuilder {
             featureFlags: FeatureFlags,
             widget: WidgetUpdater,
             migrationClient: MigrationClient,
-            dataClient: DataClient
+            dataClient: DataClient,
+            pushClient: PushClient
         ) {
             self.analyticsClient = analyticsClient
             self.bookClient = bookClient
@@ -98,6 +102,7 @@ public enum RootBuilder {
             self.widget = widget
             self.migrationClient = migrationClient
             self.dataClient = dataClient
+            self.pushClient = pushClient
         }
     }
 
@@ -124,6 +129,7 @@ public enum RootBuilder {
                         .dependency(gateway.widget)
                         .dependency(gateway.migrationClient)
                         .dependency(gateway.dataClient)
+                        .dependency(gateway.pushClient)
                         ._printChanges()
                 }
             ))

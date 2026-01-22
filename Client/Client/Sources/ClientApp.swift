@@ -17,6 +17,7 @@ import MigrationCore
 import BookModel
 import SQLiteData
 import DataClientLive
+import PushClientLive
 
 // swiftlint:disable force_try force_cast
 
@@ -95,7 +96,8 @@ struct ClientApp: App {
                         tagClient: isMigrationCompleted
                             ? .generateGRDB(database)
                             : .generate(delegate.persistence)
-                    )
+                    ),
+                    pushClient: .generate()
                 ),
                 with: .init(groupID: Project.current.subscription.groupID)
             )
