@@ -149,7 +149,7 @@ struct SettingsScreen: View {
                     Button {
                         store.send(.screen(.onDataManagementTapped))
                     } label: {
-                        Label("data_management", systemImage: "folder.badge.gearshape")
+                        Text("data_management")
                     }
                 } header: {
                     Text("data_management")

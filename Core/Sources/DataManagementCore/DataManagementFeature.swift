@@ -80,15 +80,40 @@ public struct DataManagementFeature: Sendable {
                 state.json = json
                 return .none
 
-            case .internal(.loaded(.failure)):
-                // TODO: エラーハンドリング（アラート表示など）
+            case .internal(.loaded(.failure(let error))):
+                state.alert = AlertState {
+                    TextState(String(localized: "alert.title.load_failed"))
+                } actions: {
+                    ButtonState(action: .dismiss) {
+                        TextState("OK")
+                    }
+                } message: {
+                    TextState(error.localizedDescription)
+                }
                 return .none
 
             case .internal(.imported(.success)):
+                state.alert = AlertState {
+                    TextState(String(localized: "import_completed_title"))
+                } actions: {
+                    ButtonState(action: .dismiss) {
+                        TextState("OK")
+                    }
+                } message: {
+                    TextState(String(localized: "alert.message.import_success_simple"))
+                }
                 return .none
 
-            case .internal(.imported(.failure)):
-                // TODO: エラーハンドリング（アラート表示など）
+            case .internal(.imported(.failure(let error))):
+                state.alert = AlertState {
+                    TextState(String(localized: "alert.title.import_failed"))
+                } actions: {
+                    ButtonState(action: .dismiss) {
+                        TextState("OK")
+                    }
+                } message: {
+                    TextState(error.localizedDescription)
+                }
                 return .none
 
             case .alert(.presented(.dismiss)):

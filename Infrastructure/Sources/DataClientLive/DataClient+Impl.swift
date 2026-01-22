@@ -1,9 +1,12 @@
-public import DataClient
-public import ShelfClient
-public import TagClient
-public import BookModel
+import DataClient
+import ShelfClient
+import TagClient
+import BookModel
 
 import Foundation
+import OSLog
+
+private let logger: Logger = .init(subsystem: "com.bivre.bookshelf.dataclient", category: "DataClient")
 
 public extension DataClient {
     static func generate(
@@ -35,9 +38,14 @@ public extension DataClient {
 
                 // Import tags first (books reference tags)
                 for tag in exportData.tags {
-                    let exists = try? await tagClient.exists(tag.name)
-                    if let exists = exists, !exists {
-                        _ = try await tagClient.create(.init(name: tag.name))
+                    do {
+                        let exists = try await tagClient.exists(tag.name)
+                        if !exists {
+                            _ = try await tagClient.create(.init(name: tag.name))
+                        }
+                    } catch {
+                        logger.error("Failed to check or create tag \(tag.name): \(error)")
+                        throw error
                     }
                 }
 
@@ -49,12 +57,12 @@ public extension DataClient {
 }
 
 private struct ExportData: Codable, Equatable, Sendable {
-    public let version: Int
-    public let exportedAt: Date
-    public let books: [Book]
-    public let tags: [Tag]
+    let version: Int
+    let exportedAt: Date
+    let books: [Book]
+    let tags: [Tag]
 
-    public init(books: [Book], tags: [Tag]) {
+    init(books: [Book], tags: [Tag]) {
         self.version = 1
         self.exportedAt = Date()
         self.books = books

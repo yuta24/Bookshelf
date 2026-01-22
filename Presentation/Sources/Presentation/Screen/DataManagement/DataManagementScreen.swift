@@ -27,6 +27,7 @@ struct DataManagementScreen: View {
                     } label: {
                         Label("export_data", systemImage: "square.and.arrow.up")
                     }
+                    .disabled(store.json == nil)
 
                     Button {
                         isImporting = true
@@ -42,8 +43,8 @@ struct DataManagementScreen: View {
             .navigationTitle(Text("screen.title.data_management"))
             .fileExporter(
                 isPresented: $isExporting,
-                document: store.json.flatMap { ExportableDocument(json: $0) },
-                contentType: .utf8PlainText,
+                document: store.json.map { ExportableDocument(json: $0) },
+                contentType: .json,
                 onCompletion: { result in
                     switch result {
                     case .success:
@@ -55,7 +56,7 @@ struct DataManagementScreen: View {
             )
             .fileImporter(
                 isPresented: $isImporting,
-                allowedContentTypes: [.plainText],
+                allowedContentTypes: [.json],
                 onCompletion: { result in
                     switch result {
                     case let .success(url):
@@ -72,24 +73,27 @@ struct DataManagementScreen: View {
 }
 
 private struct ExportableDocument: FileDocument {
-    static let readableContentTypes: [UTType] = [.plainText]
+    static let readableContentTypes: [UTType] = [.json]
 
-    var json: String?
+    var json: String
 
     init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents else {
             throw DataError.invalidData
         }
 
-        self.json = String(data: data, encoding: .utf8)
+        guard let jsonString = String(data: data, encoding: .utf8) else {
+            throw DataError.invalidData
+        }
+        self.json = jsonString
     }
 
-    init(json: String?) {
+    init(json: String) {
         self.json = json
     }
 
     func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
-        guard let data = json?.data(using: .utf8) else {
+        guard let data = json.data(using: .utf8) else {
             throw DataError.invalidData
         }
 

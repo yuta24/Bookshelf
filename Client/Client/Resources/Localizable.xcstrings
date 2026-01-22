@@ -154,6 +154,74 @@
         }
       }
     },
+    "alert.message.export_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to export data. Please try again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データのエクスポートに失敗しました。もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "alert.message.import_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to import data. Please check the file format and try again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データのインポートに失敗しました。ファイル形式を確認してもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "alert.message.import_success_simple" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data imported successfully."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データをインポートしました。"
+          }
+        }
+      }
+    },
+    "alert.message.load_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to load data. Please try again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データの読み込みに失敗しました。もう一度お試しください。"
+          }
+        }
+      }
+    },
     "alert.title.connection_error" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -354,6 +422,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不明なエラー"
+          }
+        }
+      }
+    },
+    "alert.title.export_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Failed"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エクスポート失敗"
+          }
+        }
+      }
+    },
+    "alert.title.import_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Failed"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インポート失敗"
+          }
+        }
+      }
+    },
+    "alert.title.load_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load Failed"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データ読み込み失敗"
           }
         }
       }
