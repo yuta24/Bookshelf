@@ -47,3 +47,5 @@ Certificates/
 /tools/*
 /test_output
 *.coredataproj
+
+docs/plans/*

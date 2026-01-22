@@ -4,6 +4,7 @@ public import ComposableArchitecture
 
 public import RemindModel
 
+import Tagged
 import Foundation
 import OSLog
 import CasePaths
@@ -13,6 +14,10 @@ import FeatureFlags
 import RemindClient
 import SyncClient
 import MigrationCore
+import DataManagementCore
+import ShelfClient
+import BookModel
+import DataClient
 
 private let logger: Logger = .init(subsystem: "com.bivre.bookshelf.core", category: "SettingsFeature")
 
@@ -23,11 +28,13 @@ public struct SettingsFeature: Sendable {
         public enum State: Equatable, Sendable {
             case support(SupportFeature.State)
             case migration(MigrationFeature.State)
+            case dataManagement(DataManagementFeature.State)
         }
 
         public enum Action: Sendable {
             case support(SupportFeature.Action)
             case migration(MigrationFeature.Action)
+            case dataManagement(DataManagementFeature.Action)
         }
 
         public var body: some ReducerOf<Self> {
@@ -36,6 +43,9 @@ public struct SettingsFeature: Sendable {
             }
             Scope(state: \.migration, action: \.migration) {
                 MigrationFeature()
+            }
+            Scope(state: \.dataManagement, action: \.dataManagement) {
+                DataManagementFeature()
             }
         }
     }
@@ -86,6 +96,7 @@ public struct SettingsFeature: Sendable {
             case onMigrationTapped
             case onNetworkTapped
             case onNetworkDismissed(Bool)
+            case onDataManagementTapped
         }
 
         @CasePathable
@@ -118,6 +129,8 @@ public struct SettingsFeature: Sendable {
     var syncClient
     @Dependency(MigrationClient.self)
     var migrationClient
+    @Dependency(ShelfClient.self)
+    var shelfClient
 
     public init() {}
 
@@ -199,6 +212,9 @@ public struct SettingsFeature: Sendable {
                 return .none
             case let .screen(.onNetworkDismissed(isActived)):
                 state.isNetworkActived = isActived
+                return .none
+            case .screen(.onDataManagementTapped):
+                state.destination = .dataManagement(.init())
                 return .none
             case .internal(.load):
                 return .run { send in

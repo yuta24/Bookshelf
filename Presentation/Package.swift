@@ -40,6 +40,7 @@ let presentationTargets: [Target] = [
             .product(name: "Scanner", package: "Common"),
             .product(name: "AnalyticsClient", package: "Core"),
             .product(name: "BookCore", package: "Core"),
+            .product(name: "DataManagementCore", package: "Core"),
             .product(name: "Device", package: "Core"),
             .product(name: "FeatureFlags", package: "Core"),
             .product(name: "GenreClient", package: "Core"),

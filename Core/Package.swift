@@ -36,6 +36,7 @@ extension String {
     // Client
     static let AnalyticsClient = "AnalyticsClient"
     static let BookClient = "BookClient"
+    static let DataClient = "DataClient"
     static let GenreClient = "GenreClient"
     static let PushClient = "PushClient"
     static let RemindClient = "RemindClient"
@@ -47,6 +48,7 @@ extension String {
 
     // Core
     static let BookCore = "BookCore"
+    static let DataManagementCore = "DataManagementCore"
     static let MigrationCore = "MigrationCore"
     static let SettingsCore = "SettingsCore"
     static let StatisticsCore = "StatisticsCore"
@@ -135,6 +137,14 @@ let clientTargets: [Target] = [
         dependencies: [
             .target(name: .BookModel),
             .target(name: .GenreModel),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
+        name: .DataClient,
+        dependencies: [
+            .target(name: .BookModel),
             .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
@@ -229,6 +239,15 @@ let coreTargets: [Target] = [
         swiftSettings: defaultSwiftSettings
     ),
     .target(
+        name: .DataManagementCore,
+        dependencies: [
+            .target(name: .BookModel),
+            .target(name: .DataClient),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
         name: .MigrationCore,
         dependencies: [
             .ComposableArchitecture,
@@ -239,9 +258,13 @@ let coreTargets: [Target] = [
         name: .SettingsCore,
         dependencies: [
             .target(name: .Application),
+            .target(name: .DataManagementCore),
             .target(name: .Device),
             .target(name: .FeatureFlags),
+            .target(name: .BookModel),
+            .target(name: .DataClient),
             .target(name: .RemindClient),
+            .target(name: .ShelfClient),
             .target(name: .SyncClient),
             .target(name: .MigrationCore),
             .ComposableArchitecture,
@@ -289,6 +312,7 @@ let package = Package(
         // Client
         .library(name: .AnalyticsClient, targets: [.AnalyticsClient]),
         .library(name: .BookClient, targets: [.BookClient]),
+        .library(name: .DataClient, targets: [.DataClient]),
         .library(name: .GenreClient, targets: [.GenreClient]),
         .library(name: .PushClient, targets: [.PushClient]),
         .library(name: .RemindClient, targets: [.RemindClient]),
@@ -300,6 +324,7 @@ let package = Package(
 
         // Core
         .library(name: .BookCore, targets: [.BookCore]),
+        .library(name: .DataManagementCore, targets: [.DataManagementCore]),
         .library(name: .MigrationCore, targets: [.MigrationCore]),
         .library(name: .SettingsCore, targets: [.SettingsCore]),
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),
