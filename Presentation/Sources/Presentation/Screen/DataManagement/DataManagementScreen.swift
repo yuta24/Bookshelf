@@ -67,6 +67,7 @@ struct DataManagementScreen: View {
                 }
             )
             .onLoad { store.send(.screen(.onLoad)) }
+            .alert($store.scope(state: \.alert, action: \.alert))
             .enableInjection()
         }
     }
