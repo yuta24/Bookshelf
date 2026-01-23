@@ -477,6 +477,23 @@
         }
       }
     },
+    "alert.title.push_notification_permission_denied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push notification permission required"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知権限が必要です"
+          }
+        }
+      }
+    },
     "author" : {
       "extractionState" : "manual",
       "localizations" : {
