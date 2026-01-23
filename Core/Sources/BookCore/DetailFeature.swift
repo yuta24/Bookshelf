@@ -268,10 +268,10 @@ public struct DetailFeature: Sendable {
                 return .none
             case .screen(.showPermissionDeniedAlert):
                 state.alert = .init(
-                    title: { .init("通知権限が必要です") },
+                    title: { .init("alert.title.push_notification_permission_denied") },
                     actions: {
-                        ButtonState(action: .openSettings, label: { .init("設定を開く") })
-                        ButtonState(role: .cancel, action: .dismiss, label: { .init("キャンセル") })
+                        ButtonState(action: .openSettings, label: { .init("button.title.open_app_settings") })
+                        ButtonState(role: .cancel, action: .dismiss, label: { .init("button.title.cancel") })
                     }
                 )
                 return .none

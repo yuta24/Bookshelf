@@ -11,9 +11,5 @@ public struct PushClient: Sendable {
 }
 
 extension PushClient: DependencyKey {
-    public static let liveValue: PushClient = .init(
-        register: unimplemented("PushClient.register"),
-        request: unimplemented("PushClient.request", placeholder: false),
-        notificationSettings: unimplemented("PushClient.notificationSettings", placeholder: UNNotificationSettings(coder: NSCoder())!)
-    )
+    public static let liveValue: PushClient = .init()
 }
