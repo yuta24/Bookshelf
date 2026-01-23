@@ -1,0 +1,13 @@
+appId: com.bivre.bookshelf.develop
+name: Bookshelf E2E Tests
+
+env:
+  TEST_MODE: "true"
+  DISABLE_ANIMATIONS: "true"
+
+clearState: true
+saveScreenshots: true
+screenshotDir: .maestro/screenshots
+
+flows:
+  - 'smoke/*'

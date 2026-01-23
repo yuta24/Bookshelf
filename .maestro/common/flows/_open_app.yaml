@@ -1,0 +1,7 @@
+appId: com.bivre.bookshelf.develop
+---
+- clearState
+- launchApp
+- waitForAnimationToEnd
+- assertVisible:
+    label: "screen.title.shelf"

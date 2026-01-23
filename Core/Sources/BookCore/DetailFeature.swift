@@ -3,6 +3,7 @@ public import Foundation
 public import ComposableArchitecture
 
 public import BookModel
+import UIKit
 public import PreReleaseNotificationModel
 public import PreReleaseNotificationClient
 
@@ -13,6 +14,7 @@ import AnalyticsClient
 import ShelfClient
 import SearchClient
 import Updater
+import PushClient
 
 @Reducer
 public struct DetailFeature: Sendable {
@@ -54,6 +56,8 @@ public struct DetailFeature: Sendable {
         public var destination: Destination.State?
         @Presents
         public var confirmation: ConfirmationDialogState<Action.ConfirmationDialogAction>?
+        @Presents
+        public var alert: AlertState<Action.AlertAction>?
 
         public static func make(book: Shared<Book>) -> State {
             .init(book: book)
@@ -77,6 +81,12 @@ public struct DetailFeature: Sendable {
         }
 
         @CasePathable
+        public enum AlertAction: Sendable {
+            case openSettings
+            case dismiss
+        }
+
+        @CasePathable
         public enum ScreenAction: Sendable {
             case task
             case boughtChanged(Bool)
@@ -90,11 +100,13 @@ public struct DetailFeature: Sendable {
             case enablePreReleaseNotification
             case disablePreReleaseNotification
             case preReleaseNotificationLoaded(PreReleaseNotification?)
+            case showPermissionDeniedAlert
         }
 
         case books(BooksAction)
         case destination(PresentationAction<Destination.Action>)
         case confirmationDialog(PresentationAction<ConfirmationDialogAction>)
+        case alert(PresentationAction<AlertAction>)
         case screen(ScreenAction)
     }
 
@@ -110,10 +122,14 @@ public struct DetailFeature: Sendable {
     var widgetUpdater
     @Dependency(PreReleaseNotificationClient.self)
     var preReleaseNotificationClient
+    @Dependency(PushClient.self)
+    var pushClient
     @Dependency(\.date)
     var date
     @Dependency(\.dismiss)
     var dismiss
+    @Dependency(\.openURL)
+    var openURL
 
     public init() {}
 
@@ -213,9 +229,34 @@ public struct DetailFeature: Sendable {
                 ) else {
                     return .none
                 }
-                state.preReleaseNotification = notification
-                return .run { _ in
-                    await preReleaseNotificationClient.add(notification)
+
+                return .run { send in
+                    let settings = await pushClient.notificationSettings()
+
+                    switch settings.authorizationStatus {
+                    case .authorized, .provisional, .ephemeral:
+                        await preReleaseNotificationClient.add(notification)
+                        await send(.screen(.preReleaseNotificationLoaded(notification)))
+
+                    case .notDetermined:
+                        do {
+                            let granted = try await pushClient.request()
+                            if granted {
+                                await preReleaseNotificationClient.add(notification)
+                                await send(.screen(.preReleaseNotificationLoaded(notification)))
+                            } else {
+                                await send(.screen(.showPermissionDeniedAlert))
+                            }
+                        } catch {
+                            await send(.screen(.showPermissionDeniedAlert))
+                        }
+
+                    case .denied:
+                        await send(.screen(.showPermissionDeniedAlert))
+
+                    @unknown default:
+                        await send(.screen(.showPermissionDeniedAlert))
+                    }
                 }
             case .screen(.disablePreReleaseNotification):
                 state.preReleaseNotification = nil
@@ -225,8 +266,31 @@ public struct DetailFeature: Sendable {
             case let .screen(.preReleaseNotificationLoaded(notification)):
                 state.preReleaseNotification = notification
                 return .none
+            case .screen(.showPermissionDeniedAlert):
+                state.alert = .init(
+                    title: { .init("alert.title.push_notification_permission_denied") },
+                    actions: {
+                        ButtonState(action: .openSettings, label: { .init("button.title.open_app_settings") })
+                        ButtonState(role: .cancel, action: .dismiss, label: { .init("button.title.cancel") })
+                    }
+                )
+                return .none
+            case .alert(.presented(.openSettings)):
+                state.alert = nil
+                return .run { _ in
+                    if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                        await openURL(settingsUrl)
+                    }
+                }
+            case .alert(.presented(.dismiss)):
+                state.alert = nil
+                return .none
+            case .alert(.dismiss):
+                state.alert = nil
+                return .none
             }
         }
         .ifLet(\.$destination, action: \.destination) { Destination() }
+        .ifLet(\.$alert, action: \.alert)
     }
 }

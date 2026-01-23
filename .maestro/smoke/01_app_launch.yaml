@@ -1,0 +1,10 @@
+appId: com.bivre.bookshelf.develop
+---
+- launchApp
+- waitForAnimationToEnd
+# アプリが起動し、本棚タブが表示されることを確認
+- assertVisible:
+    label: "screen.title.shelf"
+# 本棚タブが選択状態であることを確認（アイコンが表示されている）
+- assertVisible:
+    id: "books.vertical"

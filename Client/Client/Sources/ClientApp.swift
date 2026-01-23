@@ -16,6 +16,8 @@ import TagClientLive
 import MigrationCore
 import BookModel
 import SQLiteData
+import DataClientLive
+import PushClientLive
 
 // swiftlint:disable force_try force_cast
 
@@ -80,7 +82,22 @@ struct ClientApp: App {
                     device: .generate(),
                     featureFlags: .generate(.generate()),
                     widget: .generate(.shared),
-                    migrationClient: migrationClient
+                    migrationClient: migrationClient,
+                    dataClient: .generate(
+                        shelfClient: {
+                            if isSnapshot {
+                                return .snapshot(delegate.persistence)
+                            } else if isMigrationCompleted {
+                                return .generateGRDB(database)
+                            } else {
+                                return .generate(delegate.persistence)
+                            }
+                        }(),
+                        tagClient: isMigrationCompleted
+                            ? .generateGRDB(database)
+                            : .generate(delegate.persistence)
+                    ),
+                    pushClient: .generate()
                 ),
                 with: .init(groupID: Project.current.subscription.groupID)
             )

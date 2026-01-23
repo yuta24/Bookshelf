@@ -29,3 +29,11 @@ unit-test: # unit-test: run test
 .PHONY: screenshot
 screenshot: # screenshot: capture screenshot
 	bundle exec fastlane ios create_screenshots
+
+.PHONY: e2e-test
+e2e-test: # e2e-test: run E2E tests with Maestro
+	maestro test .maestro
+
+.PHONY: e2e-test-smoke
+e2e-test-smoke: # e2e-test-smoke: run smoke tests only
+	maestro test .maestro/smoke
