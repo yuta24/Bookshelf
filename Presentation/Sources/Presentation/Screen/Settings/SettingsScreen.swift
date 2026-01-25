@@ -4,6 +4,9 @@ import Inject
 import PulseUI
 import RemindModel
 import SettingsCore
+import DataManagementCore
+import UniformTypeIdentifiers
+import BookModel
 
 extension DayOfWeek {
     var key: String {
@@ -72,10 +75,12 @@ struct SettingsScreen: View {
         NavigationStack {
             List {
                 Section {
-                    Toggle(
-                        isOn: $store.isSyncEnabled.sending(\.screen.syncEnabledChanged),
-                        label: { Text("icloud_sync") }
-                    )
+                    if !store.isMigrationCompleted {
+                        Toggle(
+                            isOn: $store.isSyncEnabled.sending(\.screen.syncEnabledChanged),
+                            label: { Text("icloud_sync") }
+                        )
+                    }
 
                     if store.enableNotification {
                         Toggle(
@@ -127,6 +132,29 @@ struct SettingsScreen: View {
                     }
                 }
 
+                if !store.isMigrationCompleted {
+                    Section {
+                        Button {
+                            store.send(.screen(.onMigrationTapped))
+                        } label: {
+                            Text("migration")
+                        }
+                    } header: {
+                        Text("Data")
+                    }
+                }
+
+                // データ管理セクション
+                Section {
+                    Button {
+                        store.send(.screen(.onDataManagementTapped))
+                    } label: {
+                        Text("data_management")
+                    }
+                } header: {
+                    Text("data_management")
+                }
+
                 Section {
                     Link("contact_us", destination: URL(string: "https://forms.gle/zqRXY74UU7WH9vf58")!)
                         .foregroundStyle(Color(.label))
@@ -163,6 +191,12 @@ struct SettingsScreen: View {
             .navigationTitle(Text("screen.title.settings"))
             .sheet(item: $store.scope(state: \.destination?.support, action: \.destination.support), content: { store in
                 SupportScreen(store: store).presentationDetents([.medium])
+            })
+            .sheet(item: $store.scope(state: \.destination?.migration, action: \.destination.migration), content: { store in
+                MigrationScreen(store: store)
+            })
+            .sheet(item: $store.scope(state: \.destination?.dataManagement, action: \.destination.dataManagement), content: { store in
+                DataManagementScreen(store: store)
             })
             .sheet(
                 isPresented: $store.isNetworkActived.sending(\.screen.onNetworkDismissed),

@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 @preconcurrency import PackageDescription
 
@@ -14,6 +14,7 @@ let defaultSwiftSettings: [SwiftSetting] = [
 
 extension Target.Dependency {
     static let ComposableArchitecture: Target.Dependency = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+    static let SwiftNavigation: Target.Dependency = .product(name: "SwiftNavigation", package: "swift-navigation")
     static let OrderedCollections: Target.Dependency = .product(name: "OrderedCollections", package: "swift-collections")
     static let Updater: Target.Dependency = .product(name: "Updater", package: "Common")
 }
@@ -35,6 +36,7 @@ extension String {
     // Client
     static let AnalyticsClient = "AnalyticsClient"
     static let BookClient = "BookClient"
+    static let DataClient = "DataClient"
     static let GenreClient = "GenreClient"
     static let PushClient = "PushClient"
     static let RemindClient = "RemindClient"
@@ -46,6 +48,8 @@ extension String {
 
     // Core
     static let BookCore = "BookCore"
+    static let DataManagementCore = "DataManagementCore"
+    static let MigrationCore = "MigrationCore"
     static let SettingsCore = "SettingsCore"
     static let StatisticsCore = "StatisticsCore"
 
@@ -89,6 +93,7 @@ let domainTargets: [Target] = [
         name: .BookModel,
         dependencies: [
             .product(name: "Tagged", package: "swift-tagged"),
+            .product(name: "SQLiteData", package: "sqlite-data"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -132,6 +137,14 @@ let clientTargets: [Target] = [
         dependencies: [
             .target(name: .BookModel),
             .target(name: .GenreModel),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
+        name: .DataClient,
+        dependencies: [
+            .target(name: .BookModel),
             .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
@@ -218,9 +231,27 @@ let coreTargets: [Target] = [
             .target(name: .ShelfClient),
             .target(name: .PreReleaseNotificationModel),
             .target(name: .PreReleaseNotificationClient),
+            .target(name: .PushClient),
             .ComposableArchitecture,
+            .SwiftNavigation,
             .OrderedCollections,
             .Updater,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
+        name: .DataManagementCore,
+        dependencies: [
+            .target(name: .BookModel),
+            .target(name: .DataClient),
+            .ComposableArchitecture,
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
+        name: .MigrationCore,
+        dependencies: [
+            .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -228,10 +259,15 @@ let coreTargets: [Target] = [
         name: .SettingsCore,
         dependencies: [
             .target(name: .Application),
+            .target(name: .DataManagementCore),
             .target(name: .Device),
             .target(name: .FeatureFlags),
+            .target(name: .BookModel),
+            .target(name: .DataClient),
             .target(name: .RemindClient),
+            .target(name: .ShelfClient),
             .target(name: .SyncClient),
+            .target(name: .MigrationCore),
             .ComposableArchitecture,
         ],
         swiftSettings: defaultSwiftSettings
@@ -277,6 +313,7 @@ let package = Package(
         // Client
         .library(name: .AnalyticsClient, targets: [.AnalyticsClient]),
         .library(name: .BookClient, targets: [.BookClient]),
+        .library(name: .DataClient, targets: [.DataClient]),
         .library(name: .GenreClient, targets: [.GenreClient]),
         .library(name: .PushClient, targets: [.PushClient]),
         .library(name: .RemindClient, targets: [.RemindClient]),
@@ -288,12 +325,16 @@ let package = Package(
 
         // Core
         .library(name: .BookCore, targets: [.BookCore]),
+        .library(name: .DataManagementCore, targets: [.DataManagementCore]),
+        .library(name: .MigrationCore, targets: [.MigrationCore]),
         .library(name: .SettingsCore, targets: [.SettingsCore]),
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-collections.git", exact: "1.2.0"),
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.20.2"),
+        .package(url: "https://github.com/apple/swift-collections.git", exact: "1.3.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.0", traits: [.trait(name: "SQLiteDataTagged")]),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.22.3"),
+        .package(url: "https://github.com/pointfreeco/swift-navigation.git", exact: "2.4.2"),
         .package(url: "https://github.com/pointfreeco/swift-tagged.git", exact: "0.10.0"),
         .package(path: "../Common"),
 //        .package(path: "../Experiment"),

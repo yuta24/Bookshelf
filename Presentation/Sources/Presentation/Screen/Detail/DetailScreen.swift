@@ -236,6 +236,7 @@ struct DetailScreen: View {
             EditTagScreen(store: store).presentationDetents([.medium])
         })
         .confirmationDialog($store.scope(state: \.confirmation, action: \.confirmationDialog))
+        .alert($store.scope(state: \.alert, action: \.alert))
         .enableInjection()
     }
 }

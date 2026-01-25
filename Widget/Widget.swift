@@ -8,6 +8,8 @@ import Intents
 import SearchClientLive
 import ShelfClient
 import ShelfClientLive
+import MigrationCore
+import SQLiteData
 
 struct Provider: IntentTimelineProvider {
     let shelfClient: ShelfClient
@@ -163,11 +165,29 @@ struct WidgetExt: Widget {
     let kind: String = "Widget"
     let persistence: PersistenceController = .shared
 
+    private var appGroupsName: String {
+        Bundle.main.object(forInfoDictionaryKey: "AppGroupsName") as! String
+    }
+
     var body: some WidgetConfiguration {
-        IntentConfiguration(
+        let database = try! createDatabase(id: appGroupsName, with: .default)
+
+        let migrationClient = MigrationClient.generate(
+            persistence: persistence,
+            grdbDatabase: database,
+            appGroupIdentifier: appGroupsName
+        )
+
+        let isMigrationCompleted = migrationClient.isCompleted()
+
+        let shelfClient: ShelfClient = isMigrationCompleted
+            ? .generateGRDB(database)
+            : .generate(persistence)
+
+        return IntentConfiguration(
             kind: kind,
             intent: ConfigurationIntent.self,
-            provider: Provider(shelfClient: .generate(persistence))
+            provider: Provider(shelfClient: shelfClient)
         ) { entry in
             WidgetEntryView(entry: entry)
         }

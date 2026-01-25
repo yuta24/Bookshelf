@@ -26,7 +26,15 @@ public import FeatureFlags
 
 public import WidgetUpdater
 
+public import MigrationCore
+
+public import DataClient
+
+public import PushClient
+
 import ComposableArchitecture
+import GRDB
+import SQLiteData
 
 public enum RootBuilder {
     public struct Configuratoin {
@@ -40,46 +48,61 @@ public enum RootBuilder {
     public struct Gateway {
         public var analyticsClient: AnalyticsClient
         public var bookClient: BookClient
+        public var database: any DatabaseWriter
         public var genreClient: GenreClient
         public var preReleaseNotificationClient: PreReleaseNotificationClient
         public var remindClient: RemindClient
         public var searchClient: SearchClient
         public var shelfClient: ShelfClient
         public var syncClient: SyncClient
+        public var syncEngine: SyncEngine
         public var tagClient: TagClient
         public var application: Application
         public var device: Device
         public var featureFlags: FeatureFlags
         public var widget: WidgetUpdater
+        public var migrationClient: MigrationClient
+        public var dataClient: DataClient
+        public var pushClient: PushClient
 
         public init(
             analyticsClient: AnalyticsClient,
             bookClient: BookClient,
+            database: any DatabaseWriter,
             genreClient: GenreClient,
             preReleaseNotificationClient: PreReleaseNotificationClient,
             remindClient: RemindClient,
             searchClient: SearchClient,
             shelfClient: ShelfClient,
             syncClient: SyncClient,
+            syncEngine: SyncEngine,
             tagClient: TagClient,
             application: Application,
             device: Device,
             featureFlags: FeatureFlags,
-            widget: WidgetUpdater
+            widget: WidgetUpdater,
+            migrationClient: MigrationClient,
+            dataClient: DataClient,
+            pushClient: PushClient
         ) {
             self.analyticsClient = analyticsClient
             self.bookClient = bookClient
+            self.database = database
             self.genreClient = genreClient
             self.preReleaseNotificationClient = preReleaseNotificationClient
             self.remindClient = remindClient
             self.searchClient = searchClient
             self.shelfClient = shelfClient
             self.syncClient = syncClient
+            self.syncEngine = syncEngine
             self.tagClient = tagClient
             self.application = application
             self.device = device
             self.featureFlags = featureFlags
             self.widget = widget
+            self.migrationClient = migrationClient
+            self.dataClient = dataClient
+            self.pushClient = pushClient
         }
     }
 
@@ -98,11 +121,15 @@ public enum RootBuilder {
                         .dependency(gateway.searchClient)
                         .dependency(gateway.shelfClient)
                         .dependency(gateway.syncClient)
+                        .dependency(gateway.syncEngine)
                         .dependency(gateway.tagClient)
                         .dependency(gateway.application)
                         .dependency(gateway.device)
                         .dependency(gateway.featureFlags)
                         .dependency(gateway.widget)
+                        .dependency(gateway.migrationClient)
+                        .dependency(gateway.dataClient)
+                        .dependency(gateway.pushClient)
                         ._printChanges()
                 }
             ))

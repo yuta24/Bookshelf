@@ -4,12 +4,7 @@ set -euo pipefail
 
 GIT_REPO=$(git rev-parse --show-toplevel)
 
-# Use automatic simulator detection
-TEST_DESTINATION=$("${GIT_REPO}/scripts/detect-simulator.sh")
-
-# Extract device and OS info for logging (optional fallback for display)
-TEST_DEVICE=$(echo "$TEST_DESTINATION" | sed -E 's/.*name=([^,]+).*/\1/')
-TEST_OS=$(echo "$TEST_DESTINATION" | sed -E 's/.*OS=([^,]+).*/\1/')
+TEST_DESTINATION="platform=iphonesimulator,OS=${TEST_OS},name=${TEST_DEVICE}"
 
 rm -rf ${GIT_REPO}/test_output
 
@@ -26,4 +21,4 @@ set -o pipefail && env NSUnbufferedIO=YES \
   -resultBundlePath ${GIT_REPO}/test_output/Tests.xcresult \
   -enableCodeCoverage YES \
   -skipMacroValidation \
-  clean test 2>&1 | ${GIT_REPO}/tools/xcbeautify
+  test 2>&1 | ${GIT_REPO}/tools/xcbeautify

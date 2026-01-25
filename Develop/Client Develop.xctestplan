@@ -28,13 +28,6 @@
     {
       "target" : {
         "containerPath" : "container:Client-Develop.xcodeproj",
-        "identifier" : "2BB43B542677992B00497798",
-        "name" : "ClientTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:Client-Develop.xcodeproj",
         "identifier" : "2BB43B5E2677992B00497798",
         "name" : "ClientUITests"
       }
@@ -48,9 +41,30 @@
     },
     {
       "target" : {
+        "containerPath" : "container:..\/Infrastructure",
+        "identifier" : "InfrastructureTests",
+        "name" : "InfrastructureTests"
+      }
+    },
+    {
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "ShelfScreenSnapshotTests"
+          }
+        ]
+      },
+      "target" : {
         "containerPath" : "container:..\/Presentation",
         "identifier" : "PresentationTests",
         "name" : "PresentationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Client-Develop.xcodeproj",
+        "identifier" : "2BB43B542677992B00497798",
+        "name" : "ClientTests"
       }
     }
   ],

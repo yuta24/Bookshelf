@@ -1,22 +1,44 @@
 name: Run unit tests
 
 on:
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: "0 9 * * 1,3"
 
 jobs:
   test:
-    runs-on: macos-15
+    runs-on: macos-26
     env:
-      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.2.0.app/Contents/Developer
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
       FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
     steps:
-      - uses: actions/checkout@v4.2.2
-      - uses: ruby/setup-ruby@v1.245.0
+      - uses: actions/checkout@v6.0.2
+      - uses: ruby/setup-ruby@v1.286.0
         with:
           bundler-cache: true
+      - name: Cache SPM packages
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            .build
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+      - name: Cache DerivedData
+        uses: actions/cache@v5
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('**/*.swift', '**/Package.resolved') }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-
+      - name: Cache tools
+        uses: actions/cache@v5
+        with:
+          path: tools
+          key: tools-${{ runner.os }}-${{ hashFiles('scripts/tool/*.sh') }}
       - name: Bootstrap
         run: make bootstrap
         env:
@@ -24,3 +46,6 @@ jobs:
           GOOGLE_SERVICE_PASSPHRASE: ${{ secrets.GOOGLE_SERVICE_PASSPHRASE }}
       - name: Run unit tests
         run: make unit-test
+        env:
+          TEST_OS: 26.2
+          TEST_DEVICE: iPhone 17 Pro

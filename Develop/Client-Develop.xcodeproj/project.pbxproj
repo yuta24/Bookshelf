@@ -28,8 +28,11 @@
 		2B26AC482BB7D3AE0003659A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2B26AC472BB7D3AE0003659A /* PrivacyInfo.xcprivacy */; };
 		2B26AC4C2BB7D43A0003659A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2B26AC4B2BB7D43A0003659A /* PrivacyInfo.xcprivacy */; };
 		2B2F67DE26861FB4007C8F5D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2F67DD26861FB4007C8F5D /* CloudKit.framework */; };
+		2B429A762F1F1C3600498F99 /* DataClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2B429A752F1F1C3600498F99 /* DataClientLive */; };
 		2B4620A12988149C00C0619C /* FeatureFlags+Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4620A02988149C00C0619C /* FeatureFlags+Impl.swift */; };
 		2B4680352826B88A005AA211 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 2B4680342826B88A005AA211 /* Presentation */; };
+		2B5C8CA52EE5D787006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA42EE5D787006E0B97 /* MigrationCore */; };
+		2B5C8CA62EE5D788006E0B97 /* MigrationCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5C8CA82EE5D789006E0B97 /* MigrationCore */; };
 		2B5CD8A82A46D9B2007EFFEF /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8A72A46D9B2007EFFEF /* InfoPlist.xcstrings */; };
 		2B5CD8AA2A46D9B2007EFFEF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 2B5CD8A92A46D9B2007EFFEF /* Localizable.xcstrings */; };
 		2B5F955D2B9946AB00CE092E /* GenreClientLive in Frameworks */ = {isa = PBXBuildFile; productRef = 2B5F955C2B9946AB00CE092E /* GenreClientLive */; };
@@ -184,6 +187,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B5C8CA62EE5D788006E0B97 /* MigrationCore in Frameworks */,
 				2B0167EB2AF3FE95008F8BB9 /* TagClientLive in Frameworks */,
 				2B23310B2AD2EEDA005DF076 /* Infrastructure in Frameworks */,
 				2B0167DF2AF3F981008F8BB9 /* SearchClientLive in Frameworks */,
@@ -198,6 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B429A762F1F1C3600498F99 /* DataClientLive in Frameworks */,
 				2B8CA95D2AF61AD800642DEC /* RemindClientLive in Frameworks */,
 				2B0167E12AF3FE61008F8BB9 /* TagClientLive in Frameworks */,
 				2BA200502E12DF1600956E89 /* PreReleaseNotificationClientLive in Frameworks */,
@@ -233,6 +238,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B5C8CA52EE5D787006E0B97 /* MigrationCore in Frameworks */,
 				2B0167E72AF3FE87008F8BB9 /* TagClientLive in Frameworks */,
 				2B2330F72AD2E9E7005DF076 /* Infrastructure in Frameworks */,
 				2B0167DB2AF3F973008F8BB9 /* SearchClientLive in Frameworks */,
@@ -435,6 +441,7 @@
 				2B0167DE2AF3F981008F8BB9 /* SearchClientLive */,
 				2B0167EA2AF3FE95008F8BB9 /* TagClientLive */,
 				2B1963422BAA98E700B33496 /* ShelfClientLive */,
+				2B5C8CA82EE5D789006E0B97 /* MigrationCore */,
 			);
 			productName = AddActionExtension;
 			productReference = 2B6458392AD2B9D700AD4870 /* AddActionExtension.appex */;
@@ -471,6 +478,7 @@
 				2B1963382BAA98A200B33496 /* ShelfClientLive */,
 				2B7740F92BABB45D00AB4F26 /* BookClientLive */,
 				2BA2004F2E12DF1600956E89 /* PreReleaseNotificationClientLive */,
+				2B429A752F1F1C3600498F99 /* DataClientLive */,
 			);
 			productName = Client;
 			productReference = 2BB43B402677992900497798 /* Client.app */;
@@ -531,6 +539,7 @@
 				2B0167DA2AF3F973008F8BB9 /* SearchClientLive */,
 				2B0167E62AF3FE87008F8BB9 /* TagClientLive */,
 				2B1963402BAA98DF00B33496 /* ShelfClientLive */,
+				2B5C8CA42EE5D787006E0B97 /* MigrationCore */,
 			);
 			productName = WidgetExtension;
 			productReference = 2BF8770A29E1BAF0003C8723 /* WidgetExtension.appex */;
@@ -869,9 +878,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 0.17.0;
+				MARKETING_VERSION = 0.18.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -930,9 +939,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 0.17.0;
+				MARKETING_VERSION = 0.18.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1309,9 +1318,21 @@
 			package = 2B2331152AD2F233005DF076 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
 		};
+		2B429A752F1F1C3600498F99 /* DataClientLive */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DataClientLive;
+		};
 		2B4680342826B88A005AA211 /* Presentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Presentation;
+		};
+		2B5C8CA42EE5D787006E0B97 /* MigrationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MigrationCore;
+		};
+		2B5C8CA82EE5D789006E0B97 /* MigrationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MigrationCore;
 		};
 		2B5F955C2B9946AB00CE092E /* GenreClientLive */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.2.1
 
 import PackageDescription
 
@@ -17,7 +17,7 @@ let targets: [Target] = [
         name: "AnalyticsClientLive",
         dependencies: [
             .product(name: "AnalyticsClient", package: "Core"),
-            .product(name: "FirebaseAnalyticsWithoutAdIdSupport", package: "firebase-ios-sdk"),
+            .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -40,6 +40,16 @@ let targets: [Target] = [
         swiftSettings: defaultSwiftSettings
     ),
     .target(
+        name: "DataClientLive",
+        dependencies: [
+            .product(name: "DataClient", package: "Core"),
+            .product(name: "ShelfClient", package: "Core"),
+            .product(name: "TagClient", package: "Core"),
+            .product(name: "BookModel", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .target(
         name: "GenreClientLive",
         dependencies: [
             .product(name: "GenreClient", package: "Core"),
@@ -52,6 +62,17 @@ let targets: [Target] = [
         name: "Infrastructure",
         dependencies: [
             .target(name: "BookRecord"),
+            .product(name: "SQLiteData", package: "sqlite-data"),
+            .product(name: "MigrationCore", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
+    .testTarget(
+        name: "InfrastructureTests",
+        dependencies: [
+            .target(name: "Infrastructure"),
+            .target(name: "BookRecord"),
+            .product(name: "BookModel", package: "Core"),
         ],
         swiftSettings: defaultSwiftSettings
     ),
@@ -130,6 +151,10 @@ let package = Package(
             targets: ["BookClientLive"]
         ),
         .library(
+            name: "DataClientLive",
+            targets: ["DataClientLive"]
+        ),
+        .library(
             name: "GenreClientLive",
             targets: ["GenreClientLive"]
         ),
@@ -167,7 +192,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "11.15.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "12.8.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.0"),
         .package(path: "../Core"),
     ],
     targets: targets
