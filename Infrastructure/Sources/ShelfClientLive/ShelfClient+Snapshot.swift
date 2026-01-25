@@ -45,7 +45,7 @@ public extension ShelfClient {
                 fatalError()
             },
             exists: { _ in
-                fatalError()
+                false
             },
             resume: { _ in
                 fatalError()
