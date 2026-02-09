@@ -12,7 +12,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "xcodebuildmcp@latest"
+        "xcodebuildmcp@2.0.0"
       ],
       "env": {
         "INCREMENTAL_BUILDS_ENABLED": "true",
