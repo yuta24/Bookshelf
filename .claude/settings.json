@@ -1,6 +1,32 @@
 {
   "permissions": {
-    "allow": []
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(true)",
+      "Bash(rm:*)",
+      "Bash(git tag:*)",
+      "Bash(git add:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(make:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "mcp__XcodeBuildMCP__list_schems_ws",
+      "mcp__XcodeBuildMCP__list_sims",
+      "mcp__XcodeBuildMCP__build_ios_sim_id_ws",
+      "mcp__XcodeBuildMCP__build_run_ios_sim_id_ws",
+      "mcp__XcodeBuildMCP__get_sim_app_path_id_ws",
+      "mcp__XcodeBuildMCP__get_ios_bundle_id",
+      "mcp__XcodeBuildMCP__install_app_sim",
+      "mcp__XcodeBuildMCP__launch_app_sim",
+      "mcp__XcodeBuildMCP__build_ios_sim_name_ws",
+      "mcp__circleci-mcp-server__get_build_failure_logs",
+      "mcp__circleci-mcp-server__rerun_workflow"
+    ]
   },
   "enabledMcpjsonServers": [
     "XcodeBuildMCP",
