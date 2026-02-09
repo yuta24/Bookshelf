@@ -192,8 +192,8 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "12.8.0"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "12.9.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.1"),
         .package(path: "../Core"),
     ],
     targets: targets
