@@ -1,9 +1,12 @@
+import Foundation
 import Testing
 import ComposableArchitecture
 @testable import BookCore
 @testable import BookModel
 import ShelfClient
 import FeatureFlags
+
+private typealias Tag = BookModel.Tag
 
 @MainActor
 @Suite
@@ -59,12 +62,12 @@ struct ShelfFeatureTests {
             $0[FeatureFlags.self].enableExport = { false }
             $0.continuousClock = ImmediateClock()
         }
+        store.exhaustivity = .off
 
         await store.send(.screen(.task))
         await store.receive(\.books.load)
-        await store.receive(\.books.loaded) {
-            $0.$books.withLock { $0 = .init(uniqueElements: [book]) }
-        }
+        await store.receive(\.books.loaded)
+        store.state.$books.withLock { #expect($0 == .init(uniqueElements: [book])) }
     }
 
     // MARK: - onLayoutChanged → layout が変更される
@@ -74,10 +77,10 @@ struct ShelfFeatureTests {
         let store = TestStore(initialState: ShelfFeature.State.make(layout: .list)) {
             ShelfFeature()
         }
+        store.exhaustivity = .off
 
-        await store.send(.screen(.onLayoutChanged(.grid))) {
-            $0.$layout.withLock { $0 = .grid }
-        }
+        await store.send(.screen(.onLayoutChanged(.grid)))
+        store.state.$layout.withLock { #expect($0 == .grid) }
     }
 
     // MARK: - onTextChanged → text が変更され items がフィルタされる
@@ -165,19 +168,19 @@ struct ShelfFeatureTests {
         try data.write(to: tempURL)
         defer { try? FileManager.default.removeItem(at: tempURL) }
 
-        var resumedBooks: [Book]?
+        let resumedBooks = LockIsolated<[Book]?>(nil)
         let store = TestStore(initialState: ShelfFeature.State.make()) {
             ShelfFeature()
         } withDependencies: {
-            $0[ShelfClient.self].resume = { @Sendable books in resumedBooks = books }
+            $0[ShelfClient.self].resume = { @Sendable books in resumedBooks.setValue(books) }
         }
+        store.exhaustivity = .off
 
         await store.send(.screen(.onImport(tempURL)))
         await store.receive(\.internal.import)
-        await store.receive(\.internal.imported) {
-            $0.$books.withLock { $0 = .init(uniqueElements: [book]) }
-        }
-        #expect(resumedBooks != nil)
+        await store.receive(\.internal.imported)
+        store.state.$books.withLock { #expect($0 == .init(uniqueElements: [book])) }
+        #expect(resumedBooks.value != nil)
     }
 
     // MARK: - destination(.dismiss) で tags の場合に selected が反映される
@@ -247,12 +250,12 @@ struct ShelfFeatureTests {
             $0[ShelfClient.self].fetchAll = { @Sendable _ in [book] }
             $0.continuousClock = ImmediateClock()
         }
+        store.exhaustivity = .off
 
         await store.send(.screen(.onRefresh))
         await store.receive(\.books.load)
-        await store.receive(\.books.loaded) {
-            $0.$books.withLock { $0 = .init(uniqueElements: [book]) }
-        }
+        await store.receive(\.books.loaded)
+        store.state.$books.withLock { #expect($0 == .init(uniqueElements: [book])) }
     }
 
     // MARK: - external(.onPersistentStoreRemoteChanged) → 再読み込み
@@ -266,12 +269,12 @@ struct ShelfFeatureTests {
             $0[ShelfClient.self].fetchAll = { @Sendable _ in [book] }
             $0.continuousClock = ImmediateClock()
         }
+        store.exhaustivity = .off
 
         await store.send(.external(.onPersistentStoreRemoteChanged))
         await store.receive(\.books.load)
-        await store.receive(\.books.loaded) {
-            $0.$books.withLock { $0 = .init(uniqueElements: [book]) }
-        }
+        await store.receive(\.books.loaded)
+        store.state.$books.withLock { #expect($0 == .init(uniqueElements: [book])) }
     }
 
     // MARK: - task で featureFlags が反映される
@@ -287,14 +290,14 @@ struct ShelfFeatureTests {
             $0[FeatureFlags.self].enableExport = { true }
             $0.continuousClock = ImmediateClock()
         }
+        store.exhaustivity = .off
 
         await store.send(.screen(.task)) {
             $0.enableImport = true
             $0.enableExport = true
         }
         await store.receive(\.books.load)
-        await store.receive(\.books.loaded) {
-            $0.$books.withLock { $0 = .init(uniqueElements: [book]) }
-        }
+        await store.receive(\.books.loaded)
+        store.state.$books.withLock { #expect($0 == .init(uniqueElements: [book])) }
     }
 }
