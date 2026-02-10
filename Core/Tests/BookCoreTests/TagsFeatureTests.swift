@@ -109,9 +109,7 @@ final class TagsFeatureTests: XCTestCase {
             $0.tags = [self.tag1, self.tag2]
         }
         await store.receive(\.tags.load)
-        await store.receive(\.tags.loaded) {
-            $0.tags = [self.tag1, self.tag2]
-        }
+        await store.receive(\.tags.loaded)
     }
 
     @MainActor
