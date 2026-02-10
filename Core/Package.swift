@@ -55,6 +55,7 @@ extension String {
 
     // Tests
     static let BookCoreTests = "BookCoreTests"
+    static let StatisticsCoreTests = "StatisticsCoreTests"
 }
 
 let commonTargets: [Target] = [
@@ -289,6 +290,12 @@ let testTargets: [Target] = [
         name: .BookCoreTests,
         dependencies: [
             .target(name: .BookCore),
+        ]
+    ),
+    .testTarget(
+        name: .StatisticsCoreTests,
+        dependencies: [
+            .target(name: .StatisticsCore),
         ]
     ),
 ]
