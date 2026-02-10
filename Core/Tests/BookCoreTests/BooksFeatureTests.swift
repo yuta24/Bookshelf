@@ -1,5 +1,4 @@
-import Foundation
-import Testing
+import XCTest
 @testable import BookCore
 @testable import BookModel
 import ComposableArchitecture
@@ -36,14 +35,19 @@ private func makeResponse(statusCode: Int) -> HTTPURLResponse {
     )!
 }
 
-@MainActor
-@Suite
-struct BooksFeatureTests {
-    @Test
-    func task_fetch_setsGenresNewsAndSales() async {
+// NOTE: Uses `\.internal.fetched` instead of `\.internal.fetched.success` / `.failure`
+// to work around a Swift 6.2.3 compiler crash in IRGen (KeyPath + CasePathable + Result).
+
+final class BooksFeatureTests: XCTestCase {
+
+    // MARK: - task fetch
+
+    @MainActor
+    func test_task_fetch_setsGenresNewsAndSales() async {
         let genres = [makeGenre(), makeGenre(id: "001002", name: "文学・小説")]
         let newsBook = makeBook(isbn: "9784815607852")
         let salesBook = makeBook(isbn: "9784815607853")
+        let response200 = makeResponse(statusCode: 200)
 
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
@@ -52,9 +56,9 @@ struct BooksFeatureTests {
             $0[BookClient.self].fetch = { @Sendable _, kind in
                 switch kind {
                 case .new:
-                    return ([newsBook], makeResponse(statusCode: 200))
+                    return ([newsBook], response200)
                 case .sales:
-                    return ([salesBook], makeResponse(statusCode: 200))
+                    return ([salesBook], response200)
                 }
             }
             $0[ShelfClient.self].exists = { @Sendable _ in false }
@@ -62,19 +66,22 @@ struct BooksFeatureTests {
 
         await store.send(.screen(.task))
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.success) {
+        await store.receive(\.internal.fetched) {
             $0.genres = .init(uniqueElements: genres)
-            $0.news = .init(uniqueElements: [newsBook])
-            $0.sales = .init(uniqueElements: [salesBook])
+            $0.news = .init(uniqueElements: [makeBook(isbn: "9784815607852", registered: false)])
+            $0.sales = .init(uniqueElements: [makeBook(isbn: "9784815607853", registered: false)])
         }
     }
 
-    @Test
-    func genreSelected_changesGenreAndRefetches() async {
+    // MARK: - genreSelected
+
+    @MainActor
+    func test_genreSelected_changesGenreAndRefetches() async {
         let newGenre = makeGenre(id: "001002", name: "文学・小説")
         let genres = [makeGenre(), newGenre]
         let newsBook = makeBook(isbn: "9784815607852")
         let salesBook = makeBook(isbn: "9784815607853")
+        let response200 = makeResponse(statusCode: 200)
 
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
@@ -83,9 +90,9 @@ struct BooksFeatureTests {
             $0[BookClient.self].fetch = { @Sendable _, kind in
                 switch kind {
                 case .new:
-                    return ([newsBook], makeResponse(statusCode: 200))
+                    return ([newsBook], response200)
                 case .sales:
-                    return ([salesBook], makeResponse(statusCode: 200))
+                    return ([salesBook], response200)
                 }
             }
             $0[ShelfClient.self].exists = { @Sendable _ in false }
@@ -95,15 +102,17 @@ struct BooksFeatureTests {
             $0.$genre.withLock { $0 = newGenre }
         }
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.success) {
+        await store.receive(\.internal.fetched) {
             $0.genres = .init(uniqueElements: genres)
-            $0.news = .init(uniqueElements: [newsBook])
-            $0.sales = .init(uniqueElements: [salesBook])
+            $0.news = .init(uniqueElements: [makeBook(isbn: "9784815607852", registered: false)])
+            $0.sales = .init(uniqueElements: [makeBook(isbn: "9784815607853", registered: false)])
         }
     }
 
-    @Test
-    func onBookTapped_setsDestinationToBook() async {
+    // MARK: - onBookTapped
+
+    @MainActor
+    func test_onBookTapped_setsDestinationToBook() async {
         let book = makeBook()
 
         let store = TestStore(initialState: BooksFeature.State.make()) {
@@ -115,8 +124,10 @@ struct BooksFeatureTests {
         }
     }
 
-    @Test
-    func fetch_failure_showsAlert() async {
+    // MARK: - fetch failure
+
+    @MainActor
+    func test_fetch_failure_showsAlert() async {
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
         } withDependencies: {
@@ -125,17 +136,20 @@ struct BooksFeatureTests {
 
         await store.send(.screen(.task))
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.failure) {
+        await store.receive(\.internal.fetched) {
             $0.destination = .alert(
                 AlertHelper.alert(from: URLError(.notConnectedToInternet), action: .onCloseTapped)
             )
         }
     }
 
-    @Test
-    func fetch_httpError_showsAlert() async {
+    // MARK: - fetch httpError
+
+    @MainActor
+    func test_fetch_httpError_showsAlert() async {
         let genres = [makeGenre()]
         let response500 = makeResponse(statusCode: 500)
+        let response200 = makeResponse(statusCode: 200)
 
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
@@ -146,7 +160,7 @@ struct BooksFeatureTests {
                 case .new:
                     return ([], response500)
                 case .sales:
-                    return ([], makeResponse(statusCode: 200))
+                    return ([], response200)
                 }
             }
             $0[ShelfClient.self].exists = { @Sendable _ in false }
@@ -154,18 +168,21 @@ struct BooksFeatureTests {
 
         await store.send(.screen(.task))
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.success) {
+        await store.receive(\.internal.fetched) {
             $0.destination = .alert(
                 AlertHelper.alert(from: response500, action: .onCloseTapped)
             )
         }
     }
 
-    @Test
-    func fetch_registeredFlag_isSetForExistingBooks() async {
+    // MARK: - registered flag
+
+    @MainActor
+    func test_fetch_registeredFlag_isSetForExistingBooks() async {
         let genres = [makeGenre()]
         let book1 = makeBook(isbn: "9784815607852")
         let book2 = makeBook(isbn: "9784815607853")
+        let response200 = makeResponse(statusCode: 200)
 
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
@@ -174,9 +191,9 @@ struct BooksFeatureTests {
             $0[BookClient.self].fetch = { @Sendable _, kind in
                 switch kind {
                 case .new:
-                    return ([book1, book2], makeResponse(statusCode: 200))
+                    return ([book1, book2], response200)
                 case .sales:
-                    return ([], makeResponse(statusCode: 200))
+                    return ([], response200)
                 }
             }
             $0[ShelfClient.self].exists = { @Sendable isbn in
@@ -186,7 +203,7 @@ struct BooksFeatureTests {
 
         await store.send(.screen(.task))
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.success) {
+        await store.receive(\.internal.fetched) {
             $0.genres = .init(uniqueElements: genres)
             $0.news = .init(uniqueElements: [
                 makeBook(isbn: "9784815607852", registered: true),
@@ -196,28 +213,34 @@ struct BooksFeatureTests {
         }
     }
 
-    @Test
-    func onRefresh_refetches() async {
+    // MARK: - onRefresh
+
+    @MainActor
+    func test_onRefresh_refetches() async {
         let genres = [makeGenre()]
+        let response200 = makeResponse(statusCode: 200)
+
         let store = TestStore(initialState: BooksFeature.State.make()) {
             BooksFeature()
         } withDependencies: {
             $0[GenreClient.self].fetch = { genres }
             $0[BookClient.self].fetch = { @Sendable _, _ in
-                ([], makeResponse(statusCode: 200))
+                ([], response200)
             }
             $0[ShelfClient.self].exists = { @Sendable _ in false }
         }
 
         await store.send(.screen(.onRefresh))
         await store.receive(\.internal.fetch)
-        await store.receive(\.internal.fetched.success) {
+        await store.receive(\.internal.fetched) {
             $0.genres = .init(uniqueElements: genres)
         }
     }
 
-    @Test
-    func alertDismiss_clearsDestination() async {
+    // MARK: - alert dismiss
+
+    @MainActor
+    func test_alertDismiss_clearsDestination() async {
         var state = BooksFeature.State.make()
         state.destination = .alert(
             AlertHelper.alert(from: URLError(.notConnectedToInternet), action: .onCloseTapped)
