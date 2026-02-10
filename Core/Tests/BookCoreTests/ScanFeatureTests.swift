@@ -156,9 +156,7 @@ final class ScanFeatureTests: XCTestCase {
         }
 
         await store.send(.screen(.onSelected(book)))
-        await store.receive(\.delegate.register) {
-            _ = $0
-        }
+        await store.receive(\.delegate.register)
     }
 
     @MainActor
