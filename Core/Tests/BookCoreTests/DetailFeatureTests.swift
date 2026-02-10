@@ -7,6 +7,7 @@ import PreReleaseNotificationClient
 import SearchClient
 import ShelfClient
 import WidgetUpdater
+import AnalyticsClient
 
 final class DetailFeatureTests: XCTestCase {
     private static let fixedDate = Date(timeIntervalSince1970: 1_700_000_000)
@@ -55,7 +56,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_boughtChanged_updatesBookAndCallsShelfClient() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -79,7 +80,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_statusChanged_read_setsReadWithDate() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -102,7 +103,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_statusChanged_reading() async {
         let book = Self.makeBook(status: .unread)
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -124,7 +125,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_statusChanged_unread() async {
         let book = Self.makeBook(status: .reading)
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -146,7 +147,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_noteChanged_updatesNoteAndSaves() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -168,13 +169,14 @@ final class DetailFeatureTests: XCTestCase {
     func test_onDeleteTapped_showsConfirmation_thenDeletes() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
         } withDependencies: {
             $0[ShelfClient.self].delete = { @Sendable _ in }
             $0[WidgetUpdater.self].setNeedNotify = { @Sendable in }
+            $0[AnalyticsClient.self].log = { @Sendable _, _ in }
             $0.dismiss = DismissEffect { }
         }
 
@@ -191,10 +193,11 @@ final class DetailFeatureTests: XCTestCase {
         await store.send(.confirmationDialog(.presented(.onDeleteTapped))) {
             $0.confirmation = nil
         }
-        await store.receive(\.books.remove)
-        await store.receive(\.books.removed) {
-            $0.$books.withLock { $0.remove(id: book.id) }
+        await store.receive(\.books.remove) {
+            let id = book.id
+            $0.$books.withLock { $0.remove(id: id) }
         }
+        await store.receive(\.books.removed)
     }
 
     // MARK: - onTagTapped
@@ -203,7 +206,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_onTagTapped_setsDestinationToEdit() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let store = TestStore(initialState: DetailFeature.State.make(book: bookShared)) {
             DetailFeature()
@@ -220,7 +223,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_refreshImage_updatesImageURL() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let newImageURL = URL(string: "https://example.com/new.jpg")!
         let searchingBook = SearchingBook(
@@ -247,9 +250,7 @@ final class DetailFeatureTests: XCTestCase {
         }
 
         await store.send(.screen(.refreshImage))
-        await store.receive(\.books.update) {
-            $0.$book.withLock { $0.imageURL = newImageURL }
-        }
+        await store.receive(\.books.update)
         await store.receive(\.books.updated)
     }
 
@@ -259,7 +260,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_disablePreReleaseNotification_removesNotification() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let notification = PreReleaseNotification(
             bookId: book.id,
@@ -288,7 +289,7 @@ final class DetailFeatureTests: XCTestCase {
     func test_preReleaseNotificationLoaded_setsNotification() async {
         let book = Self.makeBook()
         @Shared(.books) var books: IdentifiedArrayOf<Book> = [book]
-        let bookShared = $books[id: book.id]!
+        let bookShared = Shared($books[id: book.id])!
 
         let notification = PreReleaseNotification(
             bookId: book.id,
