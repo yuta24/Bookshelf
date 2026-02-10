@@ -107,13 +107,13 @@ final class EditTagFeatureTests: XCTestCase {
             )
         ) {
             EditTagFeature()
-        } withDependencies: { [tag1] in
+        } withDependencies: {
             $0[ShelfClient.self].update = { $0 }
         }
 
         await store.send(.screen(.onSelected(item))) {
             $0.items[id: self.tag1.id]?.selected = true
-            $0.book.tags = [self.tag1]
+            $0.$book.withLock { $0.tags = [self.tag1] }
         }
         await store.receive(\.books.update)
         await store.receive(\.books.updated)
@@ -144,7 +144,7 @@ final class EditTagFeatureTests: XCTestCase {
 
         await store.send(.screen(.onSelected(item))) {
             $0.items[id: self.tag1.id]?.selected = false
-            $0.book.tags = []
+            $0.$book.withLock { $0.tags = [] }
         }
         await store.receive(\.books.update)
         await store.receive(\.books.updated)
@@ -178,7 +178,7 @@ final class EditTagFeatureTests: XCTestCase {
         // Select Swift first
         await store.send(.screen(.onSelected(itemSwift))) {
             $0.items[id: self.tag2.id]?.selected = true
-            $0.book.tags = [self.tag2]
+            $0.$book.withLock { $0.tags = [self.tag2] }
         }
         await store.receive(\.books.update)
         await store.receive(\.books.updated)
@@ -186,7 +186,7 @@ final class EditTagFeatureTests: XCTestCase {
         // Select Kotlin — tags should be sorted: [Kotlin, Swift]
         await store.send(.screen(.onSelected(itemKotlin))) {
             $0.items[id: self.tag1.id]?.selected = true
-            $0.book.tags = [self.tag1, self.tag2]
+            $0.$book.withLock { $0.tags = [self.tag1, self.tag2] }
         }
         await store.receive(\.books.update)
         await store.receive(\.books.updated)
