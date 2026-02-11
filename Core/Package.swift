@@ -55,6 +55,8 @@ extension String {
 
     // Tests
     static let BookCoreTests = "BookCoreTests"
+    static let DataManagementCoreTests = "DataManagementCoreTests"
+    static let MigrationCoreTests = "MigrationCoreTests"
     static let StatisticsCoreTests = "StatisticsCoreTests"
 }
 
@@ -291,6 +293,18 @@ let testTargets: [Target] = [
         dependencies: [
             .target(name: .BookCore),
             .target(name: .SettingsCore),
+        ]
+    ),
+    .testTarget(
+        name: .DataManagementCoreTests,
+        dependencies: [
+            .target(name: .DataManagementCore),
+        ]
+    ),
+    .testTarget(
+        name: .MigrationCoreTests,
+        dependencies: [
+            .target(name: .MigrationCore),
         ]
     ),
     .testTarget(
