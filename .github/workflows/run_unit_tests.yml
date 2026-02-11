@@ -53,3 +53,4 @@ jobs:
         with:
           path: test_output/Tests.xcresult
         if: success() || failure()
+        continue-on-error: true
