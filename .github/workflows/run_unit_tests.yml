@@ -49,3 +49,7 @@ jobs:
         env:
           TEST_OS: 26.2
           TEST_DEVICE: iPhone 17 Pro
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: test_output/Tests.xcresult
+        if: success() || failure()
