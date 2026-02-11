@@ -290,6 +290,7 @@ let testTargets: [Target] = [
         name: .BookCoreTests,
         dependencies: [
             .target(name: .BookCore),
+            .target(name: .SettingsCore),
         ]
     ),
     .testTarget(
