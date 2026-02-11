@@ -55,7 +55,7 @@ jobs:
           xcrun simctl privacy "${MAESTRO_DEVICE_ID}" grant all com.bivre.bookshelf.develop
 
       - name: Run E2E Tests
-        run: maestro test --timeout 120000 .maestro
+        run: maestro test --timeout 300000 .maestro
 
       - name: Upload Test Results
         if: always()

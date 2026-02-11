@@ -1,0 +1,24 @@
+appId: com.bivre.bookshelf.develop
+---
+# 前提: 本を1冊追加
+- runFlow: ../_common/_add_sample_book.yaml
+
+# 追加した本をタップして詳細画面へ
+- tapOn:
+    text: ".*Swift.*"
+    index: 0
+
+- waitForAnimationToEnd
+
+# 削除ボタンをタップ
+- tapOn: "書籍の削除"
+
+- waitForAnimationToEnd
+
+# 確認ダイアログで削除を実行
+- tapOn: "削除"
+
+- waitForAnimationToEnd
+
+# 本棚に戻ったことを確認
+- assertVisible: "本棚"
