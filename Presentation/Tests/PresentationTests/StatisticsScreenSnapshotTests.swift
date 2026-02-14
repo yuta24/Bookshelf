@@ -4,6 +4,7 @@ import SnapshotTesting
 import ComposableArchitecture
 import BookModel
 import StatisticsCore
+import ShelfClient
 import OrderedCollections
 import Foundation
 @testable import Presentation
@@ -14,6 +15,8 @@ struct StatisticsScreenSnapshotTests {
     func statisticsScreenEmpty() {
         let store = Store(initialState: StatisticsFeature.State.make()) {
             StatisticsFeature()
+        } withDependencies: {
+            $0[ShelfClient.self].fetchAtYear = { @Sendable _ in [] }
         }
         let view = StatisticsScreen(store: store)
 
@@ -49,6 +52,8 @@ struct StatisticsScreenSnapshotTests {
         state.books = OrderedDictionary(uniqueKeysWithValues: [(1, books), (2, empty), (3, empty), (4, empty), (5, empty), (6, empty), (7, empty), (8, empty), (9, empty), (10, empty), (11, empty), (12, empty)])
         let store = Store(initialState: state) {
             StatisticsFeature()
+        } withDependencies: {
+            $0[ShelfClient.self].fetchAtYear = { @Sendable _ in [] }
         }
         let view = StatisticsScreen(store: store)
 
