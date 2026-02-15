@@ -1,0 +1,39 @@
+appId: com.bivre.bookshelf.develop
+---
+- runFlow: ../common/flows/_open_app.yaml
+
+# 追加ボタンをタップ
+- tapOn: "書籍の登録"
+
+# 追加画面が開くことを確認
+- waitForAnimationToEnd
+- assertVisible: "書籍の登録"
+
+# 検索フィールドに入力
+- tapOn:
+    text: "Search"
+    optional: true
+- inputText: "Swift"
+
+# 検索実行
+- pressKey: Enter
+
+# 検索結果を待機
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 10000
+
+- waitForAnimationToEnd
+
+# 最初の検索結果をタップ
+- tapOn:
+    index: 0
+
+- waitForAnimationToEnd
+
+# 登録ボタンをタップ
+- tapOn: "登録する"
+
+# 本棚に戻ることを確認
+- waitForAnimationToEnd
+- assertVisible: "本棚"
