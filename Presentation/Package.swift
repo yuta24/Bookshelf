@@ -83,7 +83,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/kean/Nuke.git", exact: "12.8.0"),
+        .package(url: "https://github.com/kean/Nuke.git", exact: "13.0.6"),
         .package(url: "https://github.com/kean/Pulse.git", exact: "5.1.4"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", exact: "1.5.2"),
         .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.2"),
