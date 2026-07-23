@@ -1,5 +1,5 @@
 {
-  "originHash" : "00c22ad7b3114ba54e80dd1b3e130a1b10c63e4a0576bb853bff87088be6df76",
+  "originHash" : "e89b42f3c97738b33826236d3b77f91f25854a129b945d22dcc45b5a70402baa",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/sqlite-data.git",
       "state" : {
-        "revision" : "05704b563ecb7f0bd7e49b6f360a6383a3e53e7d",
-        "version" : "1.5.1"
+        "revision" : "5de18896e7a0358084bb4e3c83f7227500ba029b",
+        "version" : "1.5.2"
       }
     },
     {
