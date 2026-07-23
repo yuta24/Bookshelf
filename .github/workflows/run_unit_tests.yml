@@ -16,12 +16,12 @@ jobs:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 60
       FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 6
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.1
       - uses: ruby/setup-ruby@v1.288.0
         with:
           bundler-cache: true
       - name: Cache SPM packages
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
@@ -30,14 +30,14 @@ jobs:
           restore-keys: |
             spm-${{ runner.os }}-
       - name: Cache DerivedData
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: deriveddata-${{ runner.os }}-${{ hashFiles('**/*.swift', '**/Package.resolved') }}
           restore-keys: |
             deriveddata-${{ runner.os }}-
       - name: Cache tools
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: tools
           key: tools-${{ runner.os }}-${{ hashFiles('scripts/tool/*.sh') }}
@@ -57,7 +57,7 @@ jobs:
           xcrun xccov view --report --json test_output/Tests.xcresult > coverage.json
       - name: Upload to Codecov
         if: success() || failure()
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: coverage.json
           fail_ci_if_error: false
