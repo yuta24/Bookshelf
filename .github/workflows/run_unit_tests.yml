@@ -51,6 +51,12 @@ jobs:
         env:
           TEST_OS: 26.2
           TEST_DEVICE: iPhone 17 Pro
+      - name: Upload raw xcodebuild log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-raw-log
+          path: test_output/xcodebuild-raw.log
       - name: Convert coverage to Codecov format
         if: success() || failure()
         run: |
