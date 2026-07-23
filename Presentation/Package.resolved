@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzysztofzablocki/Inject.git",
       "state" : {
-        "revision" : "2057eb9819813b89fd2107e99608d2d20890d9c5",
-        "version" : "1.2.4"
+        "revision" : "f53380e986a8b056e37d7ce9ca68de610b8415ef",
+        "version" : "1.6.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Pulse.git",
       "state" : {
-        "revision" : "e080339a24f5a47461378e5fe02ba3f2ef0a2cfa",
-        "version" : "4.0.3"
+        "revision" : "94b92731d370c129bb771e9c18f69b0a44ccca5c",
+        "version" : "5.2.3"
       }
     },
     {

@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzysztofzablocki/Inject.git",
       "state" : {
-        "revision" : "728c56639ecb3df441d51d5bc6747329afabcfc9",
-        "version" : "1.5.2"
+        "revision" : "f53380e986a8b056e37d7ce9ca68de610b8415ef",
+        "version" : "1.6.0"
       }
     },
     {
@@ -168,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Pulse.git",
       "state" : {
-        "revision" : "6125ce7fb51b114ba71b761d18cfd5557923bd4d",
-        "version" : "5.1.4"
+        "revision" : "94b92731d370c129bb771e9c18f69b0a44ccca5c",
+        "version" : "5.2.3"
       }
     },
     {
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/sqlite-data.git",
       "state" : {
-        "revision" : "05704b563ecb7f0bd7e49b6f360a6383a3e53e7d",
-        "version" : "1.5.1"
+        "revision" : "93e0540441a6bfdba51df27ca6d01eb6508c82a5",
+        "version" : "1.7.0"
       }
     },
     {
@@ -285,8 +285,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing.git",
       "state" : {
-        "revision" : "bf8d8c27f0f0c6d5e77bff0db76ab68f2050d15d",
-        "version" : "1.18.9"
+        "revision" : "1bc16f430d8410e7f087d4c787767b26fd32fe30",
+        "version" : "1.19.3"
       }
     },
     {
