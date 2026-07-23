@@ -4,6 +4,7 @@ commands:
   bootstrap:
     description: Bootstrap the project
     steps:
+      - run: brew update
       - run: brew install -q gpg
       - run: make bootstrap
 
