@@ -110,7 +110,9 @@ function toBook(item: Record<string, unknown>): Book | null {
     title,
     author,
     price: itemPrice,
-    affiliateUrl: typeof item.affiliateUrl === "string" ? item.affiliateUrl : null,
+    // Rakuten returns "" (not omitted) when no affiliate link applies; treat
+    // it as absent so clients decoding this as a URL? don't choke on "".
+    affiliateUrl: typeof item.affiliateUrl === "string" && item.affiliateUrl.length > 0 ? item.affiliateUrl : null,
     imageUrl: largeImageUrl,
     isbn,
     publisher: publisherName,

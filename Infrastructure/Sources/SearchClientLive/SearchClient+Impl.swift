@@ -9,15 +9,6 @@ private let logger = Logger(subsystem: "com.bivre.bookshelf", category: "SearchC
 private let signposter = OSSignposter(logger: logger)
 
 extension SearchClient.By {
-    var name: String {
-        switch self {
-        case .title:
-            "title"
-        case .isbn:
-            "isbn"
-        }
-    }
-
     var value: String {
         switch self {
         case let .title(string):
@@ -26,41 +17,38 @@ extension SearchClient.By {
             string
         }
     }
+
+    var queryItem: URLQueryItem {
+        switch self {
+        case let .title(string):
+            .init(name: "keyword", value: string)
+        case let .isbn(string):
+            .init(name: "isbn", value: string)
+        }
+    }
 }
 
 private func createURLRequest(_ by: SearchClient.By) -> URLRequest {
-    var component = URLComponents()
-    component.scheme = "https"
-    component.host = "app.rakuten.co.jp"
-    component.path = "/services/api/BooksTotal/Search/20170404"
-    component.queryItems = [
-        .init(name: "applicationId", value: Secret.Rakuten.applicationId),
-        .init(name: "affiliateId", value: Secret.Rakuten.affiliateId),
-        .init(name: "format", value: "json"),
-        .init(name: "formatVersion", value: "2"),
-        .init(name: "keyword", value: by.value),
-        .init(name: "booksGenreId", value: "001"),
-        .init(name: "outOfStockFlag", value: "1"),
-    ]
+    var component = URLComponents(string: Secret.Backend.baseURL)!
+    component.path = "/v1/books/search"
+    component.queryItems = [by.queryItem]
 
-    return URLRequest(url: component.url!)
+    var request = URLRequest(url: component.url!)
+    request.setValue(Secret.Backend.apiKey, forHTTPHeaderField: "X-API-Key")
+    return request
 }
 
-private struct RakutenSearchBookResult: Decodable {
-    private enum CodingKeys: String, CodingKey {
-        case items = "Items"
-    }
-
+private struct BackendSearchBookResult: Decodable {
     struct Item: Decodable {
         private enum CodingKeys: String, CodingKey {
             case title
             case author
-            case price = "itemPrice"
+            case price
             case affiliateURL = "affiliateUrl"
-            case imageURL = "largeImageUrl"
+            case imageURL = "imageUrl"
             case isbn
-            case publisher = "publisherName"
-            case caption = "itemCaption"
+            case publisher
+            case caption
             case salesAt = "salesDate"
         }
 
@@ -79,7 +67,7 @@ private struct RakutenSearchBookResult: Decodable {
 }
 
 private extension SearchingBook {
-    init(_ item: RakutenSearchBookResult.Item) {
+    init(_ item: BackendSearchBookResult.Item) {
         self.init(
             title: item.title,
             author: item.author,
@@ -117,7 +105,7 @@ public extension SearchClient {
 
                 switch httpURLResponse.statusCode {
                 case 200 ..< 400:
-                    let result = try decoder.decode(RakutenSearchBookResult.self, from: data)
+                    let result = try decoder.decode(BackendSearchBookResult.self, from: data)
 
                     let json = String(data: data, encoding: .utf8)!
                     logger.info("search response - \(json)")

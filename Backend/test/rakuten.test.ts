@@ -95,4 +95,24 @@ describe("mapRakutenResponse", () => {
     expect(book?.affiliateUrl).toBeNull();
     expect(book?.caption).toBeNull();
   });
+
+  it("normalizes an empty affiliateUrl string to null instead of leaking an unparsable URL", () => {
+    const body = {
+      Items: [
+        {
+          title: "Some Book",
+          author: "Some Author",
+          itemPrice: 1500,
+          affiliateUrl: "",
+          largeImageUrl: "https://example.com/image.jpg",
+          isbn: "9784000000000",
+          publisherName: "Some Publisher",
+          salesDate: "2024年01月",
+        },
+      ],
+    };
+
+    const [book] = mapRakutenResponse(body);
+    expect(book?.affiliateUrl).toBeNull();
+  });
 });

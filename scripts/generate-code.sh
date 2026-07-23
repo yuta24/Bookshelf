@@ -11,13 +11,13 @@ ${GIT_REPO}/tools/sourcery \
     --sources ${GIT_REPO}/Infrastructure/Sources/BookClientLive \
     --templates ${GIT_REPO}/Templates/Infrastructure \
     --output ${GIT_REPO}/Infrastructure/Sources/BookClientLive/Generated \
-    --args rakuten_app_id=\"${RAKUTEN_APP_ID}\" \
-    --args rakuten_affiliate_id=\"${RAKUTEN_AFFILIATE_ID}\"
+    --args backend_base_url=\"${BACKEND_BASE_URL}\" \
+    --args backend_api_key=\"${BACKEND_API_KEY}\"
 
 ${GIT_REPO}/tools/sourcery \
     --verbose \
     --sources ${GIT_REPO}/Infrastructure/Sources/SearchClientLive \
     --templates ${GIT_REPO}/Templates/Infrastructure \
     --output ${GIT_REPO}/Infrastructure/Sources/SearchClientLive/Generated \
-    --args rakuten_app_id=\"${RAKUTEN_APP_ID}\" \
-    --args rakuten_affiliate_id=\"${RAKUTEN_AFFILIATE_ID}\"
+    --args backend_base_url=\"${BACKEND_BASE_URL}\" \
+    --args backend_api_key=\"${BACKEND_API_KEY}\"
