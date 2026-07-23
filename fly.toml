@@ -27,5 +27,5 @@ primary_region = 'nrt'
     path = '/health'
 
 [[vm]]
-  memory = '1gb'
-  cpus = 1
+  size = 'shared-cpu-1x'
+  memory = '256mb'
