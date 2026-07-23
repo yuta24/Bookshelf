@@ -4,6 +4,7 @@ import type { AppConfig } from "../src/env.js";
 
 const config: AppConfig = {
   rakutenApplicationId: "test-app-id",
+  rakutenAccessKey: "pk_test-access-key",
   rakutenAffiliateId: undefined,
   apiKey: "test-api-key",
   port: 0,
@@ -49,10 +50,12 @@ describe("GET /v1/books/search", () => {
     expect(res.status).toBe(400);
   });
 
-  it("proxies to the Rakuten API and never exposes the applicationId to the caller", async () => {
+  it("proxies to the Rakuten API and never exposes credentials to the caller", async () => {
     const fetchMock = vi.fn(async (input: URL | RequestInfo) => {
       const url = new URL(input.toString());
+      expect(url.hostname).toBe("openapi.rakuten.co.jp");
       expect(url.searchParams.get("applicationId")).toBe("test-app-id");
+      expect(url.searchParams.get("accessKey")).toBe("pk_test-access-key");
       expect(url.searchParams.get("keyword")).toBe("dune");
 
       return new Response(
@@ -83,6 +86,7 @@ describe("GET /v1/books/search", () => {
     expect(res.status).toBe(200);
     expect(body.items).toHaveLength(1);
     expect(JSON.stringify(body)).not.toContain("test-app-id");
+    expect(JSON.stringify(body)).not.toContain("pk_test-access-key");
   });
 
   it("returns 502 when the Rakuten API fails", async () => {

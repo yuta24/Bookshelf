@@ -3,9 +3,11 @@ import { buildRequestUrl, mapRakutenResponse } from "../src/lib/rakuten.js";
 
 describe("buildRequestUrl", () => {
   it("includes credentials and default parameters, and never leaks affiliateId when absent", () => {
-    const url = buildRequestUrl({ applicationId: "app-id" }, { keyword: "hello" });
+    const url = buildRequestUrl({ applicationId: "app-id", accessKey: "pk_test" }, { keyword: "hello" });
 
+    expect(url.hostname).toBe("openapi.rakuten.co.jp");
     expect(url.searchParams.get("applicationId")).toBe("app-id");
+    expect(url.searchParams.get("accessKey")).toBe("pk_test");
     expect(url.searchParams.get("affiliateId")).toBeNull();
     expect(url.searchParams.get("format")).toBe("json");
     expect(url.searchParams.get("formatVersion")).toBe("2");
@@ -16,7 +18,7 @@ describe("buildRequestUrl", () => {
 
   it("forwards genreId, sort and affiliateId when provided", () => {
     const url = buildRequestUrl(
-      { applicationId: "app-id", affiliateId: "aff-id" },
+      { applicationId: "app-id", accessKey: "pk_test", affiliateId: "aff-id" },
       { genreId: "002", sort: "sales" },
     );
 

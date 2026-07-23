@@ -2,7 +2,19 @@
 
 楽天ブックスAPI (`BooksTotal/Search`) を叩くための薄いプロキシAPI。Hono + TypeScript で実装し、Fly.io にデプロイする。
 
-このリポジトリは public なので、`applicationId` / `affiliateId` をアプリや Git 管理下のコードに一切含めない。これらはこのバックエンドのプロセス環境変数としてのみ保持し、クライアント (iOS アプリ) は自身の API キーのみを保持する。
+このリポジトリは public なので、`applicationId` / `accessKey` / `affiliateId` をアプリや Git 管理下のコードに一切含めない。これらはこのバックエンドのプロセス環境変数としてのみ保持し、クライアント (iOS アプリ) は自身の API キーのみを保持する。
+
+## 楽天API 2026年仕様変更への対応
+
+楽天ウェブサービスは2026年に認証まわりを含む破壊的な仕様変更を行った(移行期間 2026-02-10 〜 2026-05-13、旧仕様は完全廃止済み)。このリポジトリは新仕様に追従済みだが、**デプロイ先の楽天アプリ登録とネットワーク設定は各自の対応が必要**:
+
+1. **アプリの再登録**: 旧来の19桁数字の `applicationId` は無効になっている。[Rakuten Developers](https://webservice.rakuten.co.jp/) でアプリを新規登録し直し、UUID形式の `applicationId` と `pk_` から始まる `accessKey` をペアで取得する。
+2. **IPアドレス許可リストへの登録**: 登録済みIP以外からのアクセスは403になる。Fly.io の [app-scoped static egress IP](https://fly.io/docs/networking/egress-ips/) を割り当てて固定IPにしてから、そのIPを楽天アプリ管理画面の Allow IP address に登録する。
+   ```bash
+   fly ips allocate-egress --app bookshelf-quiet-glade-4873 -r nrt
+   ```
+   反映まで数分かかる場合がある。
+3. 上記で取得した `applicationId` / `accessKey` を後述の `fly secrets set` で設定する。
 
 ## エンドポイント
 
@@ -23,7 +35,7 @@
 ```bash
 cd Backend
 npm install
-cp .env.example .env   # RAKUTEN_APPLICATION_ID / API_KEY 等を設定
+cp .env.example .env   # RAKUTEN_APPLICATION_ID / RAKUTEN_ACCESS_KEY / API_KEY 等を設定
 npm run dev
 ```
 
@@ -45,6 +57,7 @@ npm run typecheck
 ```bash
 fly secrets set \
   RAKUTEN_APPLICATION_ID=xxxx \
+  RAKUTEN_ACCESS_KEY=pk_xxxx \
   RAKUTEN_AFFILIATE_ID=xxxx \
   API_KEY=$(openssl rand -hex 32) \
   --app bookshelf-quiet-glade-4873

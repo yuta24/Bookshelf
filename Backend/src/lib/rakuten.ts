@@ -1,8 +1,14 @@
-const RAKUTEN_ENDPOINT = "https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404";
+// Rakuten migrated this API off `app.rakuten.co.jp` in 2026; the old domain
+// was fully decommissioned on 2026-05-13 and now only 403s.
+const RAKUTEN_ENDPOINT = "https://openapi.rakuten.co.jp/services/api/BooksTotal/Search/20170404";
 const REQUEST_TIMEOUT_MS = 8_000;
 
 export interface RakutenConfig {
   applicationId: string;
+  // Required alongside applicationId since the 2026 auth overhaul. Issued
+  // together with applicationId when (re-)registering the app in the
+  // Rakuten Developers console.
+  accessKey: string;
   affiliateId?: string;
 }
 
@@ -58,6 +64,7 @@ export async function searchBooks(config: RakutenConfig, params: RakutenSearchPa
 export function buildRequestUrl(config: RakutenConfig, params: RakutenSearchParams): URL {
   const url = new URL(RAKUTEN_ENDPOINT);
   url.searchParams.set("applicationId", config.applicationId);
+  url.searchParams.set("accessKey", config.accessKey);
   if (config.affiliateId) {
     url.searchParams.set("affiliateId", config.affiliateId);
   }

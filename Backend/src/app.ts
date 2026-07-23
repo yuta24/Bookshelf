@@ -22,6 +22,7 @@ export function createApp(config: AppConfig): Hono {
     "/v1/books",
     createBooksRoute({
       applicationId: config.rakutenApplicationId,
+      accessKey: config.rakutenAccessKey,
       affiliateId: config.rakutenAffiliateId,
     }),
   );
