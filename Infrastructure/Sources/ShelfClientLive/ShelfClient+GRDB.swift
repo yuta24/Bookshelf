@@ -48,7 +48,7 @@ public extension ShelfClient {
                     case let .some(.status(status)):
                         let targetStatus = status.toBook2Status()
                         books = try Book2
-                            .where { $0.status == targetStatus }
+                            .where { $0.status.eq(targetStatus) }
                             .order(by: { columns in
                                 columns.createdAt.desc()
                             })
@@ -70,7 +70,7 @@ public extension ShelfClient {
             },
             fetch: { id in
                 try await database.read { db in
-                    guard let book2 = try Book2.where({ $0.id == id.rawValue }).fetchOne(db) else {
+                    guard let book2 = try Book2.where({ $0.id.eq(id.rawValue) }).fetchOne(db) else {
                         return nil
                     }
 
@@ -83,7 +83,7 @@ public extension ShelfClient {
 
                 try await database.write { db in
                     // Fetch existing book
-                    guard var book2 = try Book2.where({ $0.id == book.id.rawValue }).fetchOne(db) else {
+                    guard var book2 = try Book2.where({ $0.id.eq(book.id.rawValue) }).fetchOne(db) else {
                         throw ShelfClientError.bookNotFound(book.id)
                     }
 
@@ -99,12 +99,12 @@ public extension ShelfClient {
                     try Book2.update(book2).execute(db)
 
                     // Update tags - delete existing associations and create new ones
-                    try BookTag2.where { $0.bookId == book2.id }.delete().execute(db)
+                    try BookTag2.where { $0.bookId.eq(book2.id) }.delete().execute(db)
 
                     for tag in book.tags {
                         // Ensure tag exists or create it
                         let tag2: Tag2
-                        if let existing = try Tag2.where({ $0.id == tag.id.rawValue }).fetchOne(db) {
+                        if let existing = try Tag2.where({ $0.id.eq(tag.id.rawValue) }).fetchOne(db) {
                             tag2 = existing
                         } else {
                             tag2 = Tag2(
@@ -131,12 +131,12 @@ public extension ShelfClient {
             },
             delete: { id in
                 try await database.write { db in
-                    try Book2.where { $0.id == id.rawValue }.delete().execute(db)
+                    try Book2.where { $0.id.eq(id.rawValue) }.delete().execute(db)
                 }
             },
             exists: { isbn in
                 try await database.read { db in
-                    let count = try Book2.where { $0.isbn == isbn.rawValue }.fetchCount(db)
+                    let count = try Book2.where { $0.isbn.eq(isbn.rawValue) }.fetchCount(db)
                     return count > 0
                 }
             },
@@ -167,7 +167,7 @@ public extension ShelfClient {
                         // Insert tags and associations
                         for tag in book.tags {
                             // Ensure tag exists
-                            if try Tag2.where({ $0.id == tag.id.rawValue }).fetchOne(db) == nil {
+                            if try Tag2.where({ $0.id.eq(tag.id.rawValue) }).fetchOne(db) == nil {
                                 let tag2 = Tag2(
                                     id: tag.id.rawValue,
                                     name: tag.name,
@@ -249,11 +249,11 @@ public extension ShelfClient {
 
 private func fetchTagsForBook(_ bookId: UUID, db: Database) throws -> [Tag] {
     // Get tag IDs from join table
-    let bookTags = try BookTag2.where { $0.bookId == bookId }.order(by: \.tagId).fetchAll(db)
+    let bookTags = try BookTag2.where { $0.bookId.eq(bookId) }.order(by: \.tagId).fetchAll(db)
 
     // Fetch tags
     let tag2s = try bookTags.compactMap { bookTag in
-        try Tag2.where { $0.id == bookTag.tagId }.fetchOne(db)
+        try Tag2.where { $0.id.eq(bookTag.tagId) }.fetchOne(db)
     }
 
     return tag2s.map(Tag.init)
