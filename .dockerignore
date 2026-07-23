@@ -1,0 +1,12 @@
+# The Docker build context is the repo root, but the image only needs
+# Backend/. Ignore everything else so the huge Swift/iOS project (Pods,
+# DerivedData, vendor gems, etc.) is never sent to the Docker daemon.
+*
+!Backend
+!Dockerfile
+
+Backend/node_modules
+Backend/dist
+Backend/.env
+Backend/*.log
+Backend/coverage
