@@ -79,14 +79,14 @@ public extension DatabaseReader {
     /// Check if a book exists by ID
     func bookExists(id: UUID) async throws -> Bool {
         try await read { db in
-            try Book2.where { $0.id == id }.fetchCount(db) > 0
+            try Book2.where { $0.id.eq(id) }.fetchCount(db) > 0
         }
     }
 
     /// Check if a tag exists by ID
     func tagExists(id: UUID) async throws -> Bool {
         try await read { db in
-            try Tag2.where { $0.id == id }.fetchCount(db) > 0
+            try Tag2.where { $0.id.eq(id) }.fetchCount(db) > 0
         }
     }
 
