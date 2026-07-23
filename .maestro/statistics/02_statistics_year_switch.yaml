@@ -1,0 +1,20 @@
+appId: com.bivre.bookshelf.develop
+---
+- runFlow: ../common/flows/_open_app.yaml
+
+# 統計タブへ遷移
+- tapOn: "振り返り"
+
+- waitForAnimationToEnd
+
+# 前年へ切り替え
+- tapOn:
+    id: "chevron.backward"
+
+- waitForAnimationToEnd
+
+# 翌年で元に戻す
+- tapOn:
+    id: "chevron.forward"
+
+- waitForAnimationToEnd
