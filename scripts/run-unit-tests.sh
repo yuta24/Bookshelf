@@ -7,6 +7,7 @@ GIT_REPO=$(git rev-parse --show-toplevel)
 TEST_DESTINATION="platform=iphonesimulator,OS=${TEST_OS},name=${TEST_DEVICE}"
 
 rm -rf ${GIT_REPO}/test_output
+mkdir -p ${GIT_REPO}/test_output
 
 cd ${GIT_REPO}
 
@@ -21,4 +22,4 @@ set -o pipefail && env NSUnbufferedIO=YES \
   -resultBundlePath ${GIT_REPO}/test_output/Tests.xcresult \
   -enableCodeCoverage YES \
   -skipMacroValidation \
-  test 2>&1 | ${GIT_REPO}/tools/xcbeautify
+  test 2>&1 | tee ${GIT_REPO}/test_output/xcodebuild-raw.log | ${GIT_REPO}/tools/xcbeautify --quiet --is-ci

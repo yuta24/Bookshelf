@@ -11,3 +11,7 @@ screenshotDir: .maestro/screenshots
 
 flows:
   - 'smoke/*'
+  - 'crud/*'
+  - 'search/*'
+  - 'statistics/*'
+  - 'settings/*'

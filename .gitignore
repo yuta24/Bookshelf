@@ -49,3 +49,9 @@ Certificates/
 *.coredataproj
 
 docs/plans/*
+
+## Backend (Hono/TypeScript)
+Backend/node_modules/
+Backend/dist/
+Backend/.env
+Backend/coverage/

@@ -1,0 +1,17 @@
+appId: com.bivre.bookshelf.develop
+---
+# 前提: 本を1冊追加
+- runFlow: ../_common/_add_sample_book.yaml
+
+# 追加した本をタップして詳細画面へ
+- tapOn:
+    text: ".*Swift.*"
+    index: 0
+
+- waitForAnimationToEnd
+
+# 詳細画面の要素を確認
+- assertVisible: "詳細"
+- assertVisible: "購入"
+- assertVisible: "ステータス"
+- assertVisible: "タグ"

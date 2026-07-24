@@ -33,38 +33,29 @@ private func createURLRequest(_ genre: Genre?, _ kind: BookClient.Kind) -> URLRe
         "sales"
     }
 
-    var component = URLComponents()
-    component.scheme = "https"
-    component.host = "app.rakuten.co.jp"
-    component.path = "/services/api/BooksTotal/Search/20170404"
+    var component = URLComponents(string: Secret.Backend.baseURL)!
+    component.path = "/v1/books"
     component.queryItems = [
-        .init(name: "applicationId", value: Secret.Rakuten.applicationId),
-        .init(name: "affiliateId", value: Secret.Rakuten.affiliateId),
-        .init(name: "format", value: "json"),
-        .init(name: "formatVersion", value: "2"),
-        .init(name: "booksGenreId", value: genreID),
-        .init(name: "outOfStockFlag", value: "1"),
+        .init(name: "genreId", value: genreID),
         .init(name: "sort", value: sort),
     ]
 
-    return URLRequest(url: component.url!)
+    var request = URLRequest(url: component.url!)
+    request.setValue(Secret.Backend.apiKey, forHTTPHeaderField: "X-API-Key")
+    return request
 }
 
-private struct RakutenSearchBookResult: Decodable {
-    private enum CodingKeys: String, CodingKey {
-        case items = "Items"
-    }
-
+private struct BackendSearchBookResult: Decodable {
     struct Item: Decodable {
         private enum CodingKeys: String, CodingKey {
             case title
             case author
-            case price = "itemPrice"
+            case price
             case affiliateURL = "affiliateUrl"
-            case imageURL = "largeImageUrl"
+            case imageURL = "imageUrl"
             case isbn
-            case publisher = "publisherName"
-            case caption = "itemCaption"
+            case publisher
+            case caption
             case salesAt = "salesDate"
         }
 
@@ -83,7 +74,7 @@ private struct RakutenSearchBookResult: Decodable {
 }
 
 private extension SearchingBook {
-    init(_ item: RakutenSearchBookResult.Item) {
+    init(_ item: BackendSearchBookResult.Item) {
         self.init(
             title: item.title,
             author: item.author,
@@ -121,7 +112,7 @@ public extension BookClient {
 
                 switch httpURLResponse.statusCode {
                 case 200 ..< 400:
-                    let result = try decoder.decode(RakutenSearchBookResult.self, from: data)
+                    let result = try decoder.decode(BackendSearchBookResult.self, from: data)
 
                     let json = String(data: data, encoding: .utf8)!
                     logger.info("fetch response - \(json)")

@@ -82,6 +82,26 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DataManagementCoreTests"
+               BuildableName = "DataManagementCoreTests"
+               BlueprintName = "DataManagementCoreTests"
+               ReferencedContainer = "container:../Core">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "MigrationCoreTests"
+               BuildableName = "MigrationCoreTests"
+               BlueprintName = "MigrationCoreTests"
+               ReferencedContainer = "container:../Core">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "PresentationTests"
                BuildableName = "PresentationTests"
                BlueprintName = "PresentationTests"

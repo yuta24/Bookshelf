@@ -41,6 +41,20 @@
     },
     {
       "target" : {
+        "containerPath" : "container:..\/Core",
+        "identifier" : "DataManagementCoreTests",
+        "name" : "DataManagementCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Core",
+        "identifier" : "MigrationCoreTests",
+        "name" : "MigrationCoreTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:..\/Infrastructure",
         "identifier" : "InfrastructureTests",
         "name" : "InfrastructureTests"

@@ -55,6 +55,9 @@ extension String {
 
     // Tests
     static let BookCoreTests = "BookCoreTests"
+    static let DataManagementCoreTests = "DataManagementCoreTests"
+    static let MigrationCoreTests = "MigrationCoreTests"
+    static let StatisticsCoreTests = "StatisticsCoreTests"
 }
 
 let commonTargets: [Target] = [
@@ -289,6 +292,25 @@ let testTargets: [Target] = [
         name: .BookCoreTests,
         dependencies: [
             .target(name: .BookCore),
+            .target(name: .SettingsCore),
+        ]
+    ),
+    .testTarget(
+        name: .DataManagementCoreTests,
+        dependencies: [
+            .target(name: .DataManagementCore),
+        ]
+    ),
+    .testTarget(
+        name: .MigrationCoreTests,
+        dependencies: [
+            .target(name: .MigrationCore),
+        ]
+    ),
+    .testTarget(
+        name: .StatisticsCoreTests,
+        dependencies: [
+            .target(name: .StatisticsCore),
         ]
     ),
 ]
@@ -331,11 +353,11 @@ let package = Package(
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-collections.git", exact: "1.3.0"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.5.0", traits: [.trait(name: "SQLiteDataTagged")]),
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.22.3"),
-        .package(url: "https://github.com/pointfreeco/swift-navigation.git", exact: "2.4.2"),
-        .package(url: "https://github.com/pointfreeco/swift-tagged.git", exact: "0.10.0"),
+        .package(url: "https://github.com/apple/swift-collections", exact: "1.6.0"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.7.0", traits: [.trait(name: "SQLiteDataTagged")]),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.26.1"),
+        .package(url: "https://github.com/pointfreeco/swift-navigation", exact: "2.10.3"),
+        .package(url: "https://github.com/pointfreeco/swift-tagged", exact: "0.10.0"),
         .package(path: "../Common"),
 //        .package(path: "../Experiment"),
     ],

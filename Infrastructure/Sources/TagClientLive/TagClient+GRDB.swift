@@ -40,7 +40,7 @@ public extension TagClient {
 
                 try await database.write { db in
                     // Verify tag exists first
-                    guard try Tag2.where({ $0.id == tag.id.rawValue }).fetchOne(db) != nil else {
+                    guard try Tag2.where({ $0.id.eq(tag.id.rawValue) }).fetchOne(db) != nil else {
                         throw TagClientError.tagNotFound(tag.id)
                     }
 
@@ -64,7 +64,7 @@ public extension TagClient {
             },
             exists: { name in
                 try await database.read { db in
-                    let count = try Tag2.where { $0.name == name }.fetchCount(db)
+                    let count = try Tag2.where { $0.name.eq(name) }.fetchCount(db)
                     return count > 0
                 }
             }

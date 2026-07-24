@@ -1,0 +1,18 @@
+appId: com.bivre.bookshelf.develop
+---
+# 前提: 本を1冊追加
+- runFlow: ../_common/_add_sample_book.yaml
+
+# 本棚画面で検索バーをタップ
+- tapOn:
+    text: "Search"
+    optional: true
+
+# 検索テキストを入力
+- inputText: "Swift"
+
+- waitForAnimationToEnd
+
+# 検索結果に本が表示されることを確認
+- assertVisible:
+    text: ".*Swift.*"

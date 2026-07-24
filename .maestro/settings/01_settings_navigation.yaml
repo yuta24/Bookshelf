@@ -1,0 +1,11 @@
+appId: com.bivre.bookshelf.develop
+---
+- runFlow: ../common/flows/_open_app.yaml
+
+# 設定タブへ遷移
+- tapOn: "設定"
+
+- waitForAnimationToEnd
+
+# 設定画面の要素を確認
+- assertVisible: "設定"
