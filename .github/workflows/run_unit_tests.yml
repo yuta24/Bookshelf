@@ -32,7 +32,9 @@ jobs:
       - name: Cache DerivedData
         uses: actions/cache@v6
         with:
-          path: ~/Library/Developer/Xcode/DerivedData
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            !~/Library/Developer/Xcode/DerivedData/**/ModuleCache.noindex
           key: deriveddata-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             deriveddata-${{ runner.os }}-
