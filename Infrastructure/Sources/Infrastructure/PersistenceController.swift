@@ -6,9 +6,13 @@ import BookRecord
 
 private let logger: Logger = .init(subsystem: "com.bivre.bookshelf", category: "persistence")
 
-private func makeSharedStoreURL(_ id: String, with manager: FileManager) -> URL {
-    manager.containerURL(forSecurityApplicationGroupIdentifier: id)!
-        .appending(path: "Client.sqlite")
+func makeSharedStoreURL(_ id: String, with manager: FileManager) -> URL {
+    guard let containerURL = manager.containerURL(forSecurityApplicationGroupIdentifier: id) else {
+        logger.error("App Group container '\(id)' is unavailable; falling back to the local documents directory")
+        let documentsURL = manager.urls(for: .documentDirectory, in: .userDomainMask).first ?? manager.temporaryDirectory
+        return documentsURL.appending(path: "Client.sqlite")
+    }
+    return containerURL.appending(path: "Client.sqlite")
 }
 
 public class PersistenceController: @unchecked Sendable {
@@ -27,7 +31,16 @@ public class PersistenceController: @unchecked Sendable {
     public private(set) var context: ModelContext
 
     public init(_ manager: FileManager) {
-        let container: ModelContainer = try! .init(for: BookRecord.self, TagRecord.self, configurations: ModelConfiguration(url: makeSharedStoreURL(Constant.appGroupsIdentifier, with: manager), cloudKitDatabase: .none))
+        let configuration = ModelConfiguration(url: makeSharedStoreURL(Constant.appGroupsIdentifier, with: manager), cloudKitDatabase: .none)
+
+        let container: ModelContainer
+        do {
+            container = try .init(for: BookRecord.self, TagRecord.self, configurations: configuration)
+        } catch {
+            logger.error("Failed to load persistent store, falling back to an in-memory store: \(error.localizedDescription)")
+            // swiftlint:disable:next force_try
+            container = try! .init(for: BookRecord.self, TagRecord.self, configurations: .init(isStoredInMemoryOnly: true))
+        }
 
         self.manager = manager
 

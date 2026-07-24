@@ -92,6 +92,15 @@ let targets: [Target] = [
         ],
         swiftSettings: defaultSwiftSettings
     ),
+    .testTarget(
+        name: "RemindClientLiveTests",
+        dependencies: [
+            .target(name: "RemindClientLive"),
+            .product(name: "RemindModel", package: "Core"),
+            .product(name: "RemindClient", package: "Core"),
+        ],
+        swiftSettings: defaultSwiftSettings
+    ),
     .target(
         name: "SearchClientLive",
         dependencies: [

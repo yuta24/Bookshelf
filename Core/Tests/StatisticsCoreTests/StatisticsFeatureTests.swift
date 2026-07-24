@@ -4,6 +4,7 @@ import OrderedCollections
 import Testing
 
 @testable import BookModel
+@testable import ShelfClient
 @testable import StatisticsCore
 
 @Suite
@@ -40,6 +41,7 @@ struct StatisticsFeatureTests {
     }
 
     @Test
+    @MainActor
     func onAppear_fetchesBooksAndGroupsByMonth() async throws {
         let janBook = Self.makeBook(createdAt: Self.date(year: 2025, month: 1))
         let marBook = Self.makeBook(createdAt: Self.date(year: 2025, month: 3))
@@ -57,10 +59,12 @@ struct StatisticsFeatureTests {
             books[1] = [janBook]
             books[3] = [marBook]
             $0.books = books
+            $0.maxY = 10
         }
     }
 
     @Test
+    @MainActor
     func tabChanged_updatesTab() async throws {
         let store = TestStore(initialState: StatisticsFeature.State.make()) {
             StatisticsFeature()
@@ -72,6 +76,7 @@ struct StatisticsFeatureTests {
     }
 
     @Test
+    @MainActor
     func onPreviousTapped_decrementYearAndFetches() async throws {
         let store = TestStore(initialState: StatisticsFeature.State.make()) {
             StatisticsFeature()
@@ -86,10 +91,12 @@ struct StatisticsFeatureTests {
             var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
             for i in 1...12 { books[i] = [] }
             $0.books = books
+            $0.maxY = 10
         }
     }
 
     @Test
+    @MainActor
     func onNextTapped_incrementYearAndFetches() async throws {
         var state = StatisticsFeature.State.make()
         state.select = Self.calendar.date(byAdding: .init(year: -2), to: state.latest)
@@ -108,6 +115,7 @@ struct StatisticsFeatureTests {
             var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
             for i in 1...12 { books[i] = [] }
             $0.books = books
+            $0.maxY = 10
         }
     }
 
@@ -132,6 +140,7 @@ struct StatisticsFeatureTests {
     }
 
     @Test
+    @MainActor
     func onTargetSelected_switchesToReadAndRefetches() async throws {
         let readDate = Self.date(year: 2025, month: 6)
         let book = Self.makeBook(
@@ -155,28 +164,38 @@ struct StatisticsFeatureTests {
             for i in 1...12 { books[i] = [] }
             books[6] = [book]
             $0.books = books
+            $0.maxY = 10
         }
     }
 
     @Test
+    @MainActor
     func onActive_updatesLatestAndRefetches() async throws {
-        let store = TestStore(initialState: StatisticsFeature.State.make()) {
+        let previousLatest = Self.calendar.date(byAdding: .init(day: -1), to: .init())!
+        var state = StatisticsFeature.State.make()
+        state.latest = previousLatest
+
+        let store = TestStore(initialState: state) {
             StatisticsFeature()
         } withDependencies: {
             $0[ShelfClient.self].fetchAtYear = { @Sendable _ in [] }
         }
+        // `latest` is set to `Date()` inside the reducer, so its exact value can't be
+        // predicted here; only that it moved forward is asserted below.
+        store.exhaustivity = .off
 
-        await store.send(.external(.onActive)) {
-            $0.latest = $0.latest // latest is set to Date(), hard to assert exactly
-        }
-        await store.receive(\.internal.fetched) {
-            var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
-            for i in 1...12 { books[i] = [] }
-            $0.books = books
-        }
+        await store.send(.external(.onActive))
+        await store.receive(\.internal.fetched)
+
+        #expect(store.state.latest > previousLatest)
+        var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
+        for i in 1...12 { books[i] = [] }
+        #expect(store.state.books == books)
+        #expect(store.state.maxY == 10)
     }
 
     @Test
+    @MainActor
     func fetched_booksWithNilDateAreExcluded() async throws {
         // status = .unread → readAt is nil, so with target .read, book should be excluded
         let book = Self.makeBook(
@@ -198,6 +217,30 @@ struct StatisticsFeatureTests {
             var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
             for i in 1...12 { books[i] = [] }
             $0.books = books
+            $0.maxY = 10
+        }
+    }
+
+    @Test
+    @MainActor
+    func fetched_maxYIsRoundedUpToTheNextTenAboveTheBusiestMonth() async throws {
+        // 15 books land in the same month: maxY should round up from 15 to 20,
+        // not just default to the empty-state value of 10.
+        let books = (0 ..< 15).map { _ in Self.makeBook(createdAt: Self.date(year: 2025, month: 4)) }
+
+        let store = TestStore(initialState: StatisticsFeature.State.make()) {
+            StatisticsFeature()
+        } withDependencies: {
+            $0[ShelfClient.self].fetchAtYear = { @Sendable _ in books }
+        }
+
+        await store.send(.screen(.onAppear))
+        await store.receive(\.internal.fetched) {
+            var expected: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = [:]
+            for i in 1...12 { expected[i] = [] }
+            expected[4] = .init(uniqueElements: books)
+            $0.books = expected
+            $0.maxY = 20
         }
     }
 }

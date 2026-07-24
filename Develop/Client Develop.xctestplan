@@ -55,9 +55,23 @@
     },
     {
       "target" : {
+        "containerPath" : "container:..\/Core",
+        "identifier" : "StatisticsCoreTests",
+        "name" : "StatisticsCoreTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:..\/Infrastructure",
         "identifier" : "InfrastructureTests",
         "name" : "InfrastructureTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Infrastructure",
+        "identifier" : "RemindClientLiveTests",
+        "name" : "RemindClientLiveTests"
       }
     },
     {

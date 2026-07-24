@@ -22,4 +22,5 @@ set -o pipefail && env NSUnbufferedIO=YES \
   -resultBundlePath ${GIT_REPO}/test_output/Tests.xcresult \
   -enableCodeCoverage YES \
   -skipMacroValidation \
+  COMPILER_INDEX_STORE_ENABLE=NO \
   test 2>&1 | tee ${GIT_REPO}/test_output/xcodebuild-raw.log | ${GIT_REPO}/tools/xcbeautify --quiet --is-ci

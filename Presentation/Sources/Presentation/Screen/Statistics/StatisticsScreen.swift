@@ -73,14 +73,6 @@ struct StatisticsScreen: View {
         struct Graph: View {
             let state: StatisticsFeature.State
 
-            var maxY: Int {
-                let maxY = state.books.reduce(0) { partialResult, args in
-                    max(partialResult, args.value.count)
-                }
-
-                return ((maxY / 10) + 1) * 10
-            }
-
             var body: some View {
                 VStack(spacing: 8) {
                     Chart {
@@ -89,7 +81,7 @@ struct StatisticsScreen: View {
                                     y: .value("Count", state.books[month]?.count ?? 0))
                         }
                     }
-                    .chartYScale(domain: 0 ... maxY)
+                    .chartYScale(domain: 0 ... state.maxY)
                     .chartXAxis {
                         AxisMarks { _ in
                             AxisValueLabel()
