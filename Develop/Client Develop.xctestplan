@@ -61,6 +61,13 @@
       }
     },
     {
+      "target" : {
+        "containerPath" : "container:..\/Infrastructure",
+        "identifier" : "RemindClientLiveTests",
+        "name" : "RemindClientLiveTests"
+      }
+    },
+    {
       "skippedTests" : {
         "suites" : [
           {

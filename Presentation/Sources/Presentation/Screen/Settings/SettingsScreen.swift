@@ -94,7 +94,7 @@ struct SettingsScreen: View {
                             Form {
                                 Picker(
                                     selection: .init(
-                                        get: { store.remind.dayOfWeek! },
+                                        get: { setting.dayOfWeek },
                                         set: { store.send(.screen(.dayOfWeekChanged($0))) }
                                     ),
                                     content: {

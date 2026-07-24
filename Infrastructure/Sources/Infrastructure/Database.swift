@@ -28,8 +28,15 @@ public func createDatabase(id: String, with manager: FileManager) throws -> any 
         #endif
     }
 
-    let fileURL = manager.containerURL(forSecurityApplicationGroupIdentifier: id)!
-        .appending(path: "SQLiteData.sqlite")
+    let containerURL: URL
+    if let sharedContainerURL = manager.containerURL(forSecurityApplicationGroupIdentifier: id) {
+        containerURL = sharedContainerURL
+    } else {
+        logger.error("App Group container '\(id)' is unavailable; falling back to the local documents directory")
+        containerURL = manager.urls(for: .documentDirectory, in: .userDomainMask).first ?? manager.temporaryDirectory
+    }
+
+    let fileURL = containerURL.appending(path: "SQLiteData.sqlite")
 
     let database = try defaultDatabase(path: fileURL.path(), configuration: configuration)
 
