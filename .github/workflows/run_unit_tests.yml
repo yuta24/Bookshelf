@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('**/*.swift', '**/Package.resolved') }}
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             deriveddata-${{ runner.os }}-
       - name: Cache tools
