@@ -71,11 +71,13 @@ struct ShelfScreen: View {
                                 Text("\(tag.name)")
                                     .font(.subheadline)
                                     .padding(.init(top: 2, leading: 8, bottom: 2, trailing: 8))
-                                    .background(
-                                        colorScheme == .dark
-                                            ? AnyView(Capsule(style: .continuous).stroke(Color(.label), lineWidth: 1))
-                                            : AnyView(Capsule(style: .continuous).foregroundStyle(.white))
-                                    )
+                                    .background {
+                                        if colorScheme == .dark {
+                                            Capsule(style: .continuous).stroke(Color(.label), lineWidth: 1)
+                                        } else {
+                                            Capsule(style: .continuous).foregroundStyle(.white)
+                                        }
+                                    }
                                     .onTapGesture {
                                         store.send(.screen(.onTagTapped(tag)))
                                     }

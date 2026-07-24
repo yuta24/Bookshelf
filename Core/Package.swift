@@ -311,6 +311,7 @@ let testTargets: [Target] = [
         name: .StatisticsCoreTests,
         dependencies: [
             .target(name: .StatisticsCore),
+            .target(name: .ShelfClient),
         ]
     ),
 ]

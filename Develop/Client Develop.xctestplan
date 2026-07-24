@@ -55,6 +55,13 @@
     },
     {
       "target" : {
+        "containerPath" : "container:..\/Core",
+        "identifier" : "StatisticsCoreTests",
+        "name" : "StatisticsCoreTests"
+      }
+    },
+    {
+      "target" : {
         "containerPath" : "container:..\/Infrastructure",
         "identifier" : "InfrastructureTests",
         "name" : "InfrastructureTests"

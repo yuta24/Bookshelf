@@ -33,6 +33,7 @@ public struct StatisticsFeature: Sendable {
         public var latest: Date = .init()
         public var select: Date?
         public var books: OrderedDictionary<Int, IdentifiedArrayOf<Book>> = .init()
+        public var maxY: Int = 10
         public var custom: Custom = .init(target: .created)
 
         public var current: Date {
@@ -146,6 +147,9 @@ public struct StatisticsFeature: Sendable {
                 }
 
                 state.books = ordered
+
+                let maxCount = ordered.values.map(\.count).max() ?? 0
+                state.maxY = ((maxCount / 10) + 1) * 10
 
                 return .none
             case .external(.onActive):

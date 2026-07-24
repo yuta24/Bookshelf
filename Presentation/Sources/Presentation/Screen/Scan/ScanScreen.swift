@@ -45,47 +45,43 @@ struct ScanScreen: View {
     var inject
 
     var body: some View {
-        WithViewStore(store) { state in
-            state
-        } content: { viewStore in
-            ScrollView {
-                ScanView(onCaptured: { text in
-                    viewStore.send(.screen(.captureChanged(text)))
-                })
-                .cornerRadius(4)
-                .frame(height: 180)
-                .padding()
+        ScrollView {
+            ScanView(onCaptured: { text in
+                store.send(.screen(.captureChanged(text)))
+            })
+            .cornerRadius(4)
+            .frame(height: 180)
+            .padding()
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("screen.message.scan_book")
-                        .font(.headline)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("screen.message.scan_book")
+                    .font(.headline)
 
-                    Text("screen.message.caption.scan_book")
-                        .font(.caption)
-                }
-                .padding()
+                Text("screen.message.caption.scan_book")
+                    .font(.caption)
+            }
+            .padding()
 
-                if let item = viewStore.item {
-                    Item(item: item)
-                        .onTapGesture {
-                            viewStore.send(.screen(.onSelected(item)))
-                        }
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(8)
-                        .padding(.horizontal)
-
-                    Button {
-                        viewStore.send(.screen(.onRescanTapped))
-                    } label: {
-                        Text("button.title.rescan")
+            if let item = store.item {
+                Item(item: item)
+                    .onTapGesture {
+                        store.send(.screen(.onSelected(item)))
                     }
                     .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+
+                Button {
+                    store.send(.screen(.onRescanTapped))
+                } label: {
+                    Text("button.title.rescan")
                 }
+                .padding()
             }
-            .navigationTitle(.init("screen.title.scan_book"))
-            .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationTitle(.init("screen.title.scan_book"))
+        .navigationBarTitleDisplayMode(.inline)
         .alert($store.scope(state: \.destination?.alert, action: \.destination.alert))
         .enableInjection()
     }

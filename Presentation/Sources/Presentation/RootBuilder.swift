@@ -36,6 +36,12 @@ import ComposableArchitecture
 import GRDB
 import SQLiteData
 
+#if DEBUG
+private let rootFeaturePrinter: _ReducerPrinter<RootFeature.State, RootFeature.Action>? = .customDump
+#else
+private let rootFeaturePrinter: _ReducerPrinter<RootFeature.State, RootFeature.Action>? = nil
+#endif
+
 public enum RootBuilder {
     public struct Configuratoin {
         public var groupID: String
@@ -130,7 +136,7 @@ public enum RootBuilder {
                         .dependency(gateway.migrationClient)
                         .dependency(gateway.dataClient)
                         .dependency(gateway.pushClient)
-                        ._printChanges()
+                        ._printChanges(rootFeaturePrinter)
                 }
             ))
     }
