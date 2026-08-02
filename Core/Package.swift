@@ -355,9 +355,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections", exact: "1.6.0"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.7.0", traits: [.trait(name: "SQLiteDataTagged")]),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.8.2", traits: [.trait(name: "SQLiteDataTagged")]),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.26.1"),
-        .package(url: "https://github.com/pointfreeco/swift-navigation", exact: "2.10.3"),
+        .package(url: "https://github.com/pointfreeco/swift-navigation", exact: "2.11.0"),
         .package(url: "https://github.com/pointfreeco/swift-tagged", exact: "0.10.0"),
         .package(path: "../Common"),
 //        .package(path: "../Experiment"),
