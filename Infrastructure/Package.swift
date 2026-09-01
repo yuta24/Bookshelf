@@ -202,7 +202,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", exact: "12.18.0"),
-        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.11.0", traits: [.trait(name: "SQLiteDataTagged")]),
+        .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.12.0", traits: [.trait(name: "SQLiteDataTagged")]),
         .package(path: "../Core"),
     ],
     targets: targets
