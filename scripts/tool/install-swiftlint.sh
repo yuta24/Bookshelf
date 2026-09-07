@@ -2,7 +2,7 @@
 
 GIT_REPO=$(git rev-parse --show-toplevel)
 
-SWIFTLINT_VERSION=0.65.0
+SWIFTLINT_VERSION=0.65.1
 SWIFTLINT_VERSION_FILE=${GIT_REPO}/tools/swiftlint.version
 
 if [ -x "${GIT_REPO}/tools/swiftlint" ] && [ "$(cat "${SWIFTLINT_VERSION_FILE}" 2>/dev/null)" = "${SWIFTLINT_VERSION}" ]; then
