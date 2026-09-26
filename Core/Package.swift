@@ -354,7 +354,7 @@ let package = Package(
         .library(name: .StatisticsCore, targets: [.StatisticsCore]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-collections", exact: "1.6.0"),
+        .package(url: "https://github.com/apple/swift-collections", exact: "1.7.1"),
         .package(url: "https://github.com/pointfreeco/sqlite-data.git", exact: "1.12.0", traits: [.trait(name: "SQLiteDataTagged")]),
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "1.26.2"),
         .package(url: "https://github.com/pointfreeco/swift-navigation", exact: "2.11.2"),
