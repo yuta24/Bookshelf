@@ -2,7 +2,7 @@
 
 GIT_REPO=$(git rev-parse --show-toplevel)
 
-SOURCERY_VERSION=2.3.0
+SOURCERY_VERSION=2.4.1
 SOURCERY_VERSION_FILE=${GIT_REPO}/tools/sourcery.version
 
 if [ -x "${GIT_REPO}/tools/sourcery" ] && [ "$(cat "${SOURCERY_VERSION_FILE}" 2>/dev/null)" = "${SOURCERY_VERSION}" ]; then
